@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_mensagem"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:clickable="true"
+    >
+
+    <ImageView
+        android:id="@+id/foto"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:src="@drawable/ic_account_circle_black_48dp"
+        android:contentDescription="@string/descricao_foto"/>
+
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/foto"
+        android:layout_toLeftOf="@+id/favorito"
+        android:layout_toEndOf="@+id/foto"
+        android:layout_toStartOf="@id/favorito"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="titulo"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+
+    <TextView
+        android:id="@+id/conteudo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/foto"
+        android:layout_toLeftOf="@+id/favorito"
+        android:layout_toEndOf="@+id/foto"
+        android:layout_toStartOf="@id/favorito"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="Conteudo"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_below="@+id/titulo"/>
+
+    <TextView
+        android:id="@+id/remetente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/conteudo"
+        android:layout_toRightOf="@+id/foto"
+        android:layout_toLeftOf="@+id/favorito"
+        android:layout_toEndOf="@+id/foto"
+        android:layout_toStartOf="@id/favorito"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="mail@mail"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/favorito"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:padding="16dp"
+        android:src="@drawable/ic_star_border_black_36dp"
+        />
+
+</RelativeLayout>
