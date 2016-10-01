@@ -1,8 +1,6 @@
 package com.tcc.mensageria.controller;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -108,17 +106,6 @@ public class MensageriaService extends IntentService {
         }
 
         return data;
-    }
-
-    public static class AlarmReceiver extends BroadcastReceiver {
-        private final String TAG = AlarmReceiver.class.getSimpleName();
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Intent sendIntent = new Intent(context, MensageriaService.class);
-            sendIntent.putExtra(MensageriaService.ENDERECO_EXTRA, intent.getStringExtra(MensageriaService.ENDERECO_EXTRA));
-            context.startService(sendIntent);
-            Log.d(TAG, "onReceive: ");
-        }
     }
 }
 
