@@ -21,7 +21,7 @@ public class MensageriaDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_TABELA_REMETENTE = "CREATE TABLE " + MensageriaContract.Remetentes.NOME_TABELA + "(" +
                 MensageriaContract.Remetentes._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 MensageriaContract.Remetentes.COLUNA_NOME + " TEXT NOT NULL," +
-                MensageriaContract.Remetentes.COLUNA_EMAIL + " TEXT NOT NULL" +
+                MensageriaContract.Remetentes.COLUNA_EMAIL + " TEXT UNIQUE NOT NULL" +
                 ");";
 
 
@@ -30,7 +30,7 @@ public class MensageriaDbHelper extends SQLiteOpenHelper {
 
                 MensageriaContract.Mensagens.COLUNA_TITULO + " TEXT NOT NULL," +
                 MensageriaContract.Mensagens.COLUNA_CONTEUDO + " TEXT NOT NULL," +
-                MensageriaContract.Mensagens.COLUNA_FAVORITO + " INTEGER NOT NULL," +
+                MensageriaContract.Mensagens.COLUNA_FAVORITO + " INTEGER ," +
                 MensageriaContract.Mensagens.COLUNA_FK_REMETENTE + " INTEGER NOT NULL," +
 
                 " FOREIGN KEY (" + MensageriaContract.Mensagens.COLUNA_FK_REMETENTE + ") REFERENCES " +
