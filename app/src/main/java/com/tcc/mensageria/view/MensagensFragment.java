@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.controller.ListaAdapter;
-import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
 
 public class MensagensFragment extends Fragment
@@ -62,12 +61,12 @@ public class MensagensFragment extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            MensageriaSyncAdapter.syncImmediately(getActivity());
+//        if (id == R.id.action_refresh) {
+//            MensageriaSyncAdapter.syncImmediately(getActivity());
 //            if (!listaVazia()) {
 //                mAdapter.notifyDataSetChanged();
 //            }
-        }
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -99,7 +98,7 @@ public class MensagensFragment extends Fragment
         extras.putString(EXTRA_MENSAGEM,
                 item.getString(item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)));
         extras.putString(EXTRA_REMETENTE, item.getString(item.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL)));
-        ;
+
         i.putExtra(BUNDLE_EXTRAS, extras);
 
         startActivity(i);
