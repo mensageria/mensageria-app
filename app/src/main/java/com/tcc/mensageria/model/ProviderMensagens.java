@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class ProviderMensagens extends ContentProvider {
@@ -16,8 +17,24 @@ public class ProviderMensagens extends ContentProvider {
     private MensageriaDbHelper mDBHelper;
 
     static final int MENSAGEM = 100;
+    static final int MENSAGEM_COM_REMETENTE = 101;
     static final int REMETENTE = 200;
 
+    private static final SQLiteQueryBuilder sMensagemComRemetenteQB;
+
+    static {
+        sMensagemComRemetenteQB = new SQLiteQueryBuilder();
+
+        //This is an inner join which looks like
+        //weather INNER JOIN location ON weather.location_id = location._id
+        sMensagemComRemetenteQB.setTables(
+                MensageriaContract.Mensagens.NOME_TABELA + " INNER JOIN " +
+                        MensageriaContract.Remetentes.NOME_TABELA +
+                        " ON " + MensageriaContract.Mensagens.NOME_TABELA +
+                        "." + MensageriaContract.Mensagens.COLUNA_FK_REMETENTE +
+                        " = " + MensageriaContract.Remetentes.NOME_TABELA +
+                        "." + MensageriaContract.Remetentes._ID);
+    }
 
     static UriMatcher buildUriMatcher() {
         // All paths added to the UriMatcher have a corresponding code to return when a match is
@@ -28,6 +45,7 @@ public class ProviderMensagens extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM, MENSAGEM);
+        matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM + "/" + MensageriaContract.PATH_REMETENTE, MENSAGEM_COM_REMETENTE);
         matcher.addURI(authority, MensageriaContract.PATH_REMETENTE, REMETENTE);
 
         return matcher;
@@ -47,6 +65,8 @@ public class ProviderMensagens extends ContentProvider {
         switch (match) {
             case MENSAGEM:
                 return MensageriaContract.Mensagens.CONTENT_TYPE;
+            case MENSAGEM_COM_REMETENTE:
+                return MensageriaContract.Mensagens.CONTENT_TYPE_COM_REMETENTE;
             case REMETENTE:
                 return MensageriaContract.Remetentes.CONTENT_TYPE;
             default:
@@ -63,6 +83,18 @@ public class ProviderMensagens extends ContentProvider {
             case MENSAGEM: {
                 retCursor = mDBHelper.getReadableDatabase().query(
                         MensageriaContract.Mensagens.NOME_TABELA,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            // "mensagem/*"
+            case MENSAGEM_COM_REMETENTE: {
+                retCursor = sMensagemComRemetenteQB.query(mDBHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,

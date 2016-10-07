@@ -142,9 +142,11 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 JSONObject objeto = jsonArray.getJSONObject(i);
+                long id = objeto.getLong("id");
                 String conteudo = objeto.getString("conteudo");
                 String titulo = objeto.getString("titulo");
-                boolean favorito = objeto.getBoolean("favorito");
+               //TODO fazer o favorito
+                boolean favorito = false;
 
                 JSONObject remetente = objeto.getJSONObject("remetente");
                 String nome = remetente.getString("nome");
@@ -153,6 +155,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
                 long idRemetente = addRemetente(nome, email);
 
                 ContentValues contentValues = new ContentValues();
+                contentValues.put(MensageriaContract.Mensagens._ID, id);
                 contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, conteudo);
                 contentValues.put(MensageriaContract.Mensagens.COLUNA_TITULO, titulo);
                 contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO, favorito ? 1 : 0);
@@ -170,16 +173,16 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
     long addRemetente(String nome, String email) {
         long idRemetente;
 
-        Cursor Cursor = getContext().getContentResolver().query(
+        Cursor cursor = getContext().getContentResolver().query(
                 MensageriaContract.Remetentes.CONTENT_URI,
                 new String[]{MensageriaContract.Remetentes._ID},
                 MensageriaContract.Remetentes.COLUNA_EMAIL + " = ?",
                 new String[]{email},
                 null);
 
-        if (Cursor.moveToFirst()) {
-            int locationIdIndex = Cursor.getColumnIndex(MensageriaContract.Remetentes._ID);
-            idRemetente = Cursor.getLong(locationIdIndex);
+        if (cursor.moveToFirst()) {
+            int locationIdIndex = cursor.getColumnIndex(MensageriaContract.Remetentes._ID);
+            idRemetente = cursor.getLong(locationIdIndex);
         } else {
             ContentValues valores = new ContentValues();
             valores.put(MensageriaContract.Remetentes.COLUNA_NOME, nome);
@@ -193,7 +196,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
             idRemetente = ContentUris.parseId(uriInsercao);
         }
 
-        Cursor.close();
+        cursor.close();
         return idRemetente;
     }
 
@@ -236,8 +239,32 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
              * then call ContentResolver.setIsSyncable(account, AUTHORITY, 1)
              * here.
              */
+            onAccountCreated(newAccount, context);
         }
         return newAccount;
 
     }
+
+    private static void onAccountCreated(Account newAccount, Context context) {
+        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
+        syncImmediately(context);
+    }
+
+    /**
+     * Helper method to have the sync adapter sync immediately
+     *
+     * @param context The context used to access the account service
+     */
+    public static void syncImmediately(Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        ContentResolver.requestSync(GetSyncAccount(context),
+                context.getString(R.string.content_authority), bundle);
+    }
+
+    public static void initializeSyncAdapter(Context context) {
+        GetSyncAccount(context);
+    }
+
 }

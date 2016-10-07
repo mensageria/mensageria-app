@@ -1,11 +1,14 @@
 package com.tcc.mensageria.view;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,31 +19,43 @@ import android.widget.TextView;
 
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.controller.ListaAdapter;
-import com.tcc.mensageria.controller.MensageriaService;
-import com.tcc.mensageria.model.Mensagem;
+import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
+import com.tcc.mensageria.model.MensageriaContract;
 
-import java.util.ArrayList;
+public class MensagensFragment extends Fragment
+        implements ListaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
+    final String TAG = this.getClass().getSimpleName();
+    final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
+    final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
+    final String EXTRA_REMETENTE = "EXTRA_REMETENTE";
+    final int LOADER_ID = 0;
 
-public class MensagensFragment extends Fragment implements ListaAdapter.ItemClickCallback {
-    private final String LOG_TAG = MensageriaService.class.getSimpleName();
-    private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
-    private static final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
-    private static final String EXTRA_REMETENTE = "EXTRA_REMETENTE";
+    final String[] COLUNAS_MENSAGEM = {
+            MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
+            MensageriaContract.Mensagens.COLUNA_TITULO,
+            MensageriaContract.Mensagens.COLUNA_CONTEUDO,
+            MensageriaContract.Mensagens.COLUNA_FAVORITO,
+            MensageriaContract.Remetentes.COLUNA_NOME,
+            MensageriaContract.Remetentes.COLUNA_EMAIL
+    };
+    RecyclerView mRecyclerView;
+    ListaAdapter mAdapter;
+    RecyclerView.LayoutManager mLayoutManager;
+    TextView mViewVazia;
+    Context mContext;
 
-    private RecyclerView recyclerView;
-    private ListaAdapter adapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private TextView viewVazia;
-    private Context context;
-
-    //static enquanto nao tem banco de dados
-    public static ArrayList listaMensagens;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getActivity();
+        mContext = getActivity();
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -48,12 +63,10 @@ public class MensagensFragment extends Fragment implements ListaAdapter.ItemClic
 
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            popularLista();
-            if (!listaVazia()) {
-                adapter.setListaMensagens(listaMensagens);
-                adapter.notifyDataSetChanged();
-            }
-
+            MensageriaSyncAdapter.syncImmediately(getActivity());
+//            if (!listaVazia()) {
+//                mAdapter.notifyDataSetChanged();
+//            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -62,30 +75,31 @@ public class MensagensFragment extends Fragment implements ListaAdapter.ItemClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mensagens, container, false);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.lista_mensagens);
-        viewVazia = (TextView) rootView.findViewById(R.id.view_vazia);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lista_mensagens);
+        mViewVazia = (TextView) rootView.findViewById(R.id.view_vazia);
 
-        popularLista();
-        listaVazia();
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new ListaAdapter(null);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setItemClickCallback(this);
 
-        mLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(mLayoutManager);
-        adapter = new ListaAdapter(listaMensagens);
-        recyclerView.setAdapter(adapter);
-        adapter.setItemClickCallback(this);
+        //listaVazia();
 
         return rootView;
     }
 
     @Override
     public void onItemClick(int p) {
-        Mensagem item = (Mensagem) listaMensagens.get(p);
-
-        Intent i = new Intent(context, DetalhesMensagemActivity.class);
+        Cursor item = mAdapter.getCursor();
+        item.moveToPosition(p);
+        Intent i = new Intent(mContext, DetalhesMensagemActivity.class);
 
         Bundle extras = new Bundle();
-        extras.putString(EXTRA_MENSAGEM, item.getConteudo());
-        extras.putString(EXTRA_REMETENTE, item.getRemetente());
+        extras.putString(EXTRA_MENSAGEM,
+                item.getString(item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)));
+        extras.putString(EXTRA_REMETENTE, item.getString(item.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL)));
+        ;
         i.putExtra(BUNDLE_EXTRAS, extras);
 
         startActivity(i);
@@ -93,39 +107,46 @@ public class MensagensFragment extends Fragment implements ListaAdapter.ItemClic
 
     @Override
     public void onSecondaryIconClick(int p) {
-        Mensagem item = (Mensagem) listaMensagens.get(p);
-        //update our data
-        if (item.isFavorito()) {
-            item.setFavorito(false);
-        } else {
-            item.setFavorito(true);
-        }
-        //pass new data to adapter and update
-        adapter.setListaMensagens(listaMensagens);
-        adapter.notifyDataSetChanged();
-
-    }
-
-    private void popularLista() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String endereco = sharedPref.getString(getString(R.string.pref_endereco_key)
-                , getString(R.string.endereco_default));
-
-        Intent intent = new Intent(context, MensageriaService.class);
-        intent.putExtra(MensageriaService.ENDERECO_EXTRA, endereco);
-
-        context.startService(intent);
+        //TODO favoritar mensagem
+//        Mensagem item = (Mensagem) listaMensagens.get(p);
+//        //update our data
+//        if (item.isFavorito()) {
+//            item.setFavorito(false);
     }
 
     private boolean listaVazia() {
-        if (listaMensagens == null) {
-            recyclerView.setVisibility(View.GONE);
-            viewVazia.setVisibility(View.VISIBLE);
+        if (mAdapter.getCursor() == null) {
+            mRecyclerView.setVisibility(View.GONE);
+            mViewVazia.setVisibility(View.VISIBLE);
             return true;
         } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            viewVazia.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mViewVazia.setVisibility(View.GONE);
             return false;
         }
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = MensageriaContract.Mensagens.buildMensagemComRemetente();
+
+        CursorLoader cursorLoader = new CursorLoader(getActivity(),
+                uri,
+                COLUNAS_MENSAGEM,
+                null,
+                null,
+                null);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 }

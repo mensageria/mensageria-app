@@ -21,6 +21,9 @@ public class MensageriaContract {
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MENSAGEM;
+        public static final String CONTENT_TYPE_COM_REMETENTE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MENSAGEM +
+                        "/" + PATH_REMETENTE;
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MENSAGEM;
 
@@ -36,6 +39,10 @@ public class MensageriaContract {
 
         public static Uri buildMensagemUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildMensagemComRemetente() {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REMETENTE).build();
         }
     }
 
