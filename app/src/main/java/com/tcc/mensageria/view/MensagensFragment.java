@@ -61,12 +61,9 @@ public class MensagensFragment extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-//        if (id == R.id.action_refresh) {
-//            MensageriaSyncAdapter.syncImmediately(getActivity());
-//            if (!listaVazia()) {
-//                mAdapter.notifyDataSetChanged();
-//            }
-//        }
+        if (id == R.id.action_refresh) {
+            //MensageriaSyncAdapter.syncImmediately(getActivity());
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -92,7 +89,7 @@ public class MensagensFragment extends Fragment
     public void onItemClick(int p) {
         Cursor item = mAdapter.getCursor();
         item.moveToPosition(p);
-        Intent i = new Intent(mContext, DetalhesMensagemActivity.class);
+        Intent i = new Intent(mContext, com.tcc.mensageria.view.DetalhesMensagemActivity.class);
 
         Bundle extras = new Bundle();
         extras.putString(EXTRA_MENSAGEM,
@@ -135,7 +132,7 @@ public class MensagensFragment extends Fragment
                 COLUNAS_MENSAGEM,
                 null,
                 null,
-                null);
+                COLUNAS_MENSAGEM[0] + " DESC");
         return cursorLoader;
     }
 

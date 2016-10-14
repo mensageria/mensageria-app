@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MensageriaSyncAdapter.initializeSyncAdapter(this);
     }
 
     //TODO verificar se o google play services existe no onresume e no oncreate
