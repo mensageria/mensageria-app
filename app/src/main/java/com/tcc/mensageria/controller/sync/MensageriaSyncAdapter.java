@@ -158,10 +158,11 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
                 //TODO fazer o favorito
                 boolean favorito = false;
 
-                JSONObject remetente = objeto.getJSONObject("remetente");
-                String nome = remetente.getString("nome");
-                String email = remetente.getString("contato");
-
+//                JSONObject remetente = objeto.getJSONObject("remetente");
+//                String nome = remetente.getString("nome");
+//                String email = remetente.getString("contato");
+                String nome = "Unigranrio";
+                String email = "email@email.com";
                 long idRemetente = addRemetente(nome, email);
 
                 ContentValues contentValues = new ContentValues();

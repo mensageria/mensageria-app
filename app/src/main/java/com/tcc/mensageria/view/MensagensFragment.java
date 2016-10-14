@@ -2,6 +2,7 @@ package com.tcc.mensageria.view;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.controller.ListaAdapter;
+import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
 
 public class MensagensFragment extends Fragment
@@ -103,11 +105,25 @@ public class MensagensFragment extends Fragment
 
     @Override
     public void onSecondaryIconClick(int p) {
-        //TODO favoritar mensagem
-//        Mensagem item = (Mensagem) listaMensagens.get(p);
-//        //update our data
-//        if (item.isFavorito()) {
-//            item.setFavorito(false);
+
+//        Cursor item = mAdapter.getCursor();
+//        int indexConteudo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
+//        int indexTitulo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
+//        int indexFavorito = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
+//        int indexEmailRemetente = item.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL);
+//
+//        item.moveToPosition(p);
+//
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(MensageriaContract.Mensagens._ID, item.getInt(indexConteudo));
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, item.getString(indexConteudo));
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_TITULO, item.getString(indexTitulo));
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO,
+//                item.getInt(indexFavorito) == 0 ? 1 : 0);
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE, item.getString(indexEmailRemetente));
+//
+//        Uri uri = MensageriaContract.Mensagens.CONTENT_URI;
+//        getActivity().getContentResolver().update(uri,contentValues,null,null);
     }
 
     private boolean listaVazia() {

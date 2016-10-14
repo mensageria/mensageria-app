@@ -50,13 +50,13 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         }
 
         int indexConteudo = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
-        int indextitulo = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
+        int indexTitulo = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
         int indexFavorito = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
         int indexEmailRemetente = mCursor.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL);
 
         mCursor.moveToPosition(posicao);
         holder.conteudo.setText(mCursor.getString(indexConteudo));
-        holder.titulo.setText(mCursor.getString(indextitulo));
+        holder.titulo.setText(mCursor.getString(indexTitulo));
         holder.emailRemetente.setText(mCursor.getString(indexEmailRemetente));
         if (mCursor.getInt(indexFavorito) == 1) {
             holder.favorito.setImageResource(R.drawable.ic_star_black_36dp);

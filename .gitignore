@@ -1,0 +1,9 @@
+.gradle
+.idea
+local.properties
+build/intermediates/dex-cache/cache.xml
+mensageria-app.iml
+app/app.iml
+/app/src/androidTest
+app/src/androidTest/java/com/tcc/mensageria/ApplicationTest.java
+build/generated/mockable-android-23.jar
