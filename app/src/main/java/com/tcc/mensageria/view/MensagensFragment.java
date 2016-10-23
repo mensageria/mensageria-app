@@ -36,6 +36,7 @@ public class MensagensFragment extends Fragment
             MensageriaContract.Mensagens.COLUNA_TITULO,
             MensageriaContract.Mensagens.COLUNA_CONTEUDO,
             MensageriaContract.Mensagens.COLUNA_FAVORITO,
+            MensageriaContract.Mensagens.COLUNA_FK_REMETENTE,
             MensageriaContract.Remetentes.COLUNA_NOME,
             MensageriaContract.Remetentes.COLUNA_EMAIL
     };
@@ -64,7 +65,7 @@ public class MensagensFragment extends Fragment
 
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            //MensageriaSyncAdapter.syncImmediately(getActivity());
+            MensageriaSyncAdapter.syncImmediately(getActivity());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -81,8 +82,6 @@ public class MensagensFragment extends Fragment
         mAdapter = new ListaAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setItemClickCallback(this);
-
-        //listaVazia();
 
         return rootView;
     }
@@ -106,55 +105,55 @@ public class MensagensFragment extends Fragment
     @Override
     public void onSecondaryIconClick(int p) {
 
-//        Cursor item = mAdapter.getCursor();
-//        int indexConteudo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
-//        int indexTitulo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
-//        int indexFavorito = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
-//        int indexEmailRemetente = item.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL);
-//
-//        item.moveToPosition(p);
-//
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(MensageriaContract.Mensagens._ID, item.getInt(indexConteudo));
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, item.getString(indexConteudo));
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_TITULO, item.getString(indexTitulo));
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO,
-//                item.getInt(indexFavorito) == 0 ? 1 : 0);
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE, item.getString(indexEmailRemetente));
-//
-//        Uri uri = MensageriaContract.Mensagens.CONTENT_URI;
-//        getActivity().getContentResolver().update(uri,contentValues,null,null);
+        Cursor item = mAdapter.getCursor();
+        int indexId = item.getColumnIndex(MensageriaContract.Mensagens._ID);
+        int indexConteudo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
+        int indexTitulo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
+        int indexFavorito = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
+        int indexRemetente = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE);
+
+        item.moveToPosition(p);
+
+        ContentValues contentValues = new ContentValues();
+        int id = item.getInt(indexId);
+        contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, item.getString(indexConteudo));
+        contentValues.put(MensageriaContract.Mensagens.COLUNA_TITULO, item.getString(indexTitulo));
+        int favorito = item.getInt(indexFavorito) == 0 ? 1 : 0;
+        contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO, favorito);
+        contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE, item.getInt(indexRemetente));
+
+        Uri uri = MensageriaContract.Mensagens.CONTENT_URI;
+        getActivity().getContentResolver().update(uri, contentValues, "_id = ?",
+                new String[]{Integer.toString(id)});
     }
 
     private boolean listaVazia() {
-        if (mAdapter.getCursor() == null) {
-            mRecyclerView.setVisibility(View.GONE);
-            mViewVazia.setVisibility(View.VISIBLE);
-            return true;
-        } else {
+        if (mAdapter.getCursor().moveToFirst()) {
             mRecyclerView.setVisibility(View.VISIBLE);
             mViewVazia.setVisibility(View.GONE);
             return false;
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+            mViewVazia.setVisibility(View.VISIBLE);
+            return true;
         }
     }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = MensageriaContract.Mensagens.buildMensagemComRemetente();
-
-        CursorLoader cursorLoader = new CursorLoader(getActivity(),
-                uri,
+        return new CursorLoader(getActivity(),
+                MensageriaContract.Mensagens.buildMensagemComRemetente(),
                 COLUNAS_MENSAGEM,
                 null,
                 null,
                 COLUNAS_MENSAGEM[0] + " DESC");
-        return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        listaVazia();
     }
 
     @Override
