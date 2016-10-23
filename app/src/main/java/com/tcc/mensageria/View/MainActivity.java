@@ -17,6 +17,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    //TODO verificar se o google play services existe no onresume e no oncreate
+//    @Override
+//    protected void onResume() {
+//        int codigo = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
+//        if(codigo == ConnectionResult.SUCCESS){
+//            super.onResume();
+//        }
+//        else {
+//            GoogleApiAvailability.getInstance().getErrorDialog(getParent(),codigo,startActivityForResult(codigo);)
+//        }
+//    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
