@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.model.MensageriaContract;
 
-
+/**
+ * Adapter do recycler view de mensagens
+ */
 public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHolder> {
     final String TAG = this.getClass().getSimpleName();
 
@@ -27,15 +29,21 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         swapCursor(cursor);
     }
 
+    /**
+     *
+     * @return Cursor com os dados que o adapter usará para popular o recycler view
+     */
     public Cursor getCursor() {
         return mCursor;
     }
 
-
+    /**
+     *
+     * @param itemClickCallback Callback para lidar com cliques em um item da lista
+     */
     public void setItemClickCallback(final ItemClickCallback itemClickCallback) {
         this.mItemClickCallback = itemClickCallback;
     }
-
 
     @Override
     public ListaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -87,8 +95,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
     }
 
     /**
-     * Change the underlying cursor to a new cursor. If there is an existing cursor it will be
-     * closed.
+     * Muda o cursor, se se ele ja exister será fechado
      */
     public void changeCursor(Cursor cursor) {
         Cursor old = swapCursor(cursor);
@@ -98,9 +105,9 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
     }
 
     /**
-     * Swap in a new Cursor, returning the old Cursor.  Unlike
-     * {@link #changeCursor(Cursor)}, the returned old Cursor is <em>not</em>
-     * closed.
+     * Troca o cursor atual
+     * @param newCursor cursor com os novos dados
+     * @return Cursor antigo
      */
     public Cursor swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
@@ -127,7 +134,9 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         return oldCursor;
     }
 
-
+    /**
+     * Classe com as referencias para as views
+     */
     class ListaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final ImageView foto;
@@ -159,6 +168,9 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         }
     }
 
+    /**
+     * classe para gerenciar a mudança dos dados
+     */
     private class NotifyingDataSetObserver extends DataSetObserver {
         @Override
         public void onChanged() {
@@ -175,6 +187,9 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         }
     }
 
+    /**
+     * interface que deve ser implementada para lidar com os cliques nos itens da lista
+     */
     public interface ItemClickCallback {
         void onItemClick(int p);
 

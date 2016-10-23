@@ -10,9 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+/**
+ * Classe que lida com os dados do aplicativo
+ */
 public class ProviderMensagens extends ContentProvider {
 
-    // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MensageriaDbHelper mDBHelper;
 
@@ -22,6 +24,7 @@ public class ProviderMensagens extends ContentProvider {
 
     private static final SQLiteQueryBuilder sMensagemComRemetenteQB;
 
+    // query que faz o join da tabela mensagem com a tabela remetente usando o id do remetente
     static {
         sMensagemComRemetenteQB = new SQLiteQueryBuilder();
 
@@ -36,14 +39,14 @@ public class ProviderMensagens extends ContentProvider {
                         "." + MensageriaContract.Remetentes._ID);
     }
 
+    /**
+     * Cria um validador com as uris usadas pelo content provider para acessar os dados
+     * @return um validador de uris com as uris criadas
+     */
     static UriMatcher buildUriMatcher() {
-        // All paths added to the UriMatcher have a corresponding code to return when a match is
-        // found.  The code passed into the constructor represents the code to return for the root
-        // URI.  It's common to use NO_MATCH as the code for this case.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MensageriaContract.CONTENT_AUTHORITY;
 
-        // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM, MENSAGEM);
         matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM + "/" + MensageriaContract.PATH_REMETENTE, MENSAGEM_COM_REMETENTE);
         matcher.addURI(authority, MensageriaContract.PATH_REMETENTE, REMETENTE);
@@ -70,7 +73,7 @@ public class ProviderMensagens extends ContentProvider {
             case REMETENTE:
                 return MensageriaContract.Remetentes.CONTENT_TYPE;
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("uri Desconhecida: " + uri);
         }
     }
 
@@ -128,10 +131,10 @@ public class ProviderMensagens extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
-        switch (match) {
+        switch (sUriMatcher.match(uri)) {
+            // "mensagem"
             case MENSAGEM: {
                 long _id = db.insert(MensageriaContract.Mensagens.NOME_TABELA, null, values);
                 if (_id > 0)
@@ -140,6 +143,7 @@ public class ProviderMensagens extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            // "remetente"
             case REMETENTE: {
                 long _id = db.insert(MensageriaContract.Remetentes.NOME_TABELA, null, values);
                 if (_id > 0)
@@ -158,27 +162,29 @@ public class ProviderMensagens extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        int rowsDeleted;
-        // this makes delete all rows return the number of rows deleted
+
+        int qtdDeletados;
+
         if (null == selection) selection = "1";
-        switch (match) {
+        switch (sUriMatcher.match(uri)) {
+            // "mensagem"
             case MENSAGEM:
-                rowsDeleted = db.delete(
+                qtdDeletados = db.delete(
                         MensageriaContract.Mensagens.NOME_TABELA, selection, selectionArgs);
                 break;
+            // "remetente"
             case REMETENTE:
-                rowsDeleted = db.delete(
+                qtdDeletados = db.delete(
                         MensageriaContract.Remetentes.NOME_TABELA, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        // Because a null deletes all rows
-        if (rowsDeleted != 0) {
+
+        if (qtdDeletados != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
-        return rowsDeleted;
+        return qtdDeletados;
     }
 
     @Override
@@ -186,31 +192,34 @@ public class ProviderMensagens extends ContentProvider {
             Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        int rowsUpdated;
+        int qtdAtualizados;
 
         switch (match) {
+            // "mensagem"
             case MENSAGEM:
-                rowsUpdated = db.update(MensageriaContract.Mensagens.NOME_TABELA, values, selection,
+                qtdAtualizados = db.update(MensageriaContract.Mensagens.NOME_TABELA, values, selection,
                         selectionArgs);
                 break;
+            // "remetente"
             case REMETENTE:
-                rowsUpdated = db.update(MensageriaContract.Remetentes.NOME_TABELA, values, selection,
+                qtdAtualizados = db.update(MensageriaContract.Remetentes.NOME_TABELA, values, selection,
                         selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Uri desconhecida: " + uri);
         }
-        if (rowsUpdated != 0) {
+        if (qtdAtualizados != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
-        return rowsUpdated;
+        return qtdAtualizados;
     }
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
+
+        switch (sUriMatcher.match(uri)) {
+            // "mensagem"
             case MENSAGEM:
                 db.beginTransaction();
                 int returnCount = 0;

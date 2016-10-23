@@ -38,8 +38,7 @@ import java.net.URL;
 import java.util.Vector;
 
 /**
- * Handle the transfer of data between a server and an
- * app, using the Android sync adapter framework.
+ * classe para lidar com as conexoes com o servidor utilizando um sync adapter
  */
 public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
     private final String TAG = MensageriaSyncAdapter.class.getSimpleName();
@@ -76,6 +75,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
         mContentResolver = context.getContentResolver();
     }
 
+    // faz a sincronização
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
@@ -83,6 +83,9 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
         getJSON();
     }
 
+    /**
+     * metodo para pegar os dados json do servidor
+     */
     public void getJSON() {
         HttpURLConnection conexao = null;
         BufferedReader leitor = null;
@@ -122,7 +125,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
 
             parseJson(JsonString);
         } catch (IOException e) {
-            Log.e(TAG, "Error ", e);
+            Log.e(TAG, "Erro ", e);
         } finally {
             if (conexao != null) {
                 conexao.disconnect();
@@ -131,13 +134,18 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
                 try {
                     leitor.close();
                 } catch (final IOException e) {
-                    Log.e(TAG, "Error closing stream", e);
+                    Log.e(TAG, "Erro ao fechar", e);
                 }
             }
         }
 
     }
 
+    /**
+     * Metodo para formatar a string json recebida
+     *
+     * @param JSON string para ser formatada
+     */
     public void parseJson(String JSON) {
         if (JSON == null) {
             return;
@@ -181,7 +189,13 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    long addRemetente(String nome, String email) {
+    /**
+     * Metodo para adicionar remetentes via content provider
+     * @param nome nome do remetente
+     * @param email email do remetente
+     * @return o id do remetente inserido
+     */
+    private long addRemetente(String nome, String email) {
         long idRemetente;
 
         Cursor cursor = getContext().getContentResolver().query(
@@ -192,8 +206,8 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
                 null);
 
         if (cursor.moveToFirst()) {
-            int locationIdIndex = cursor.getColumnIndex(MensageriaContract.Remetentes._ID);
-            idRemetente = cursor.getLong(locationIdIndex);
+            int indexremetente = cursor.getColumnIndex(MensageriaContract.Remetentes._ID);
+            idRemetente = cursor.getLong(indexremetente);
         } else {
             ContentValues valores = new ContentValues();
             valores.put(MensageriaContract.Remetentes.COLUNA_NOME, nome);
@@ -211,20 +225,27 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
         return idRemetente;
     }
 
-    void addMensagem(Vector<ContentValues> listaMensagens) {
+    /**
+     * Metodo para adicionar mensagens via content provider
+     * @param listaMensagens lista de mensagens para serem adicionadas no banco
+     */
+    private void addMensagem(Vector<ContentValues> listaMensagens) {
         if (listaMensagens.size() > 0) {
             ContentValues[] cvArray = new ContentValues[listaMensagens.size()];
             listaMensagens.toArray(cvArray);
             int qtdMensagens = getContext().getContentResolver().bulkInsert(MensageriaContract.Mensagens.CONTENT_URI,
                     cvArray);
             if (qtdMensagens > 0) {
-                notificar(qtdMensagens);
+                notificar();
             }
         }
     }
 
+    /**
+     * Metodo para notificar o usuario quando uma nova mensagem chegar
+     */
     //TODO ver numero de mensagens nao lidas
-    private void notificar(int qtdMensagens) {
+    private void notificar() {
         int mId = 1;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getContext())
@@ -263,9 +284,9 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Create a new dummy account for the sync adapter
+     * Criar uma conta para o sync adapter
      *
-     * @param context The application context
+     * @param context O contexto da aplicação
      */
     public static Account GetSyncAccount(Context context) {
         // Get an instance of the Android account manager
@@ -299,9 +320,9 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Helper method to have the sync adapter sync immediately
+     * Metodo para sincronizar o sync adapter
      *
-     * @param context The context used to access the account service
+     * @param context O contexto usado para fazer a sincronização
      */
     public static void syncImmediately(Context context) {
         ContentResolver.requestSync(GetSyncAccount(context),

@@ -23,14 +23,19 @@ import com.tcc.mensageria.controller.ListaAdapter;
 import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
 
+/**
+ * Fragmento que contem uma lista de mensagens
+ */
 public class MensagensFragment extends Fragment
         implements ListaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
+
     final String TAG = this.getClass().getSimpleName();
     final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
     final String EXTRA_REMETENTE = "EXTRA_REMETENTE";
     final int LOADER_ID = 0;
 
+    // colunas usadas para popular a lista
     final String[] COLUNAS_MENSAGEM = {
             MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
             MensageriaContract.Mensagens.COLUNA_TITULO,
@@ -127,7 +132,12 @@ public class MensagensFragment extends Fragment
                 new String[]{Integer.toString(id)});
     }
 
-    private boolean listaVazia() {
+    /**
+     * Metodo para verificar se o adapter tem dados para popular a view
+     * caso nao haja dados uma mensagem é mostrada
+     * @return false se a lista puder ser populada e true se nao puder
+     */
+    private boolean listaEstaVazia() {
         if (mAdapter.getCursor().moveToFirst()) {
             mRecyclerView.setVisibility(View.VISIBLE);
             mViewVazia.setVisibility(View.GONE);
@@ -153,7 +163,7 @@ public class MensagensFragment extends Fragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
-        listaVazia();
+        listaEstaVazia();
     }
 
     @Override

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
+/**
+ * Classe que cria o banco de dados
+ */
 public class MensageriaDbHelper extends SQLiteOpenHelper {
 
-    // If you change the database schema, you must increment the database version.
+    // Versao do banco de dados, deve ser mudada toda vez que o schema for mudado
     private static final int DATABASE_VERSION = 1;
 
     static final String DATABASE_NAME = "mensageria.db";
@@ -43,10 +45,6 @@ public class MensageriaDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
-        //TODO modificar para que nao drope a tabela com o upgrade
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MensageriaContract.Remetentes.NOME_TABELA);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MensageriaContract.Mensagens.NOME_TABELA);
         onCreate(sqLiteDatabase);
     }
 }

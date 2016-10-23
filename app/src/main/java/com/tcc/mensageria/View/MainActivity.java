@@ -8,6 +8,9 @@ import android.view.MenuItem;
 
 import com.tcc.mensageria.R;
 
+/**
+ * View principal
+ */
 public class MainActivity extends AppCompatActivity {
 
 

@@ -6,6 +6,9 @@ import android.widget.TextView;
 
 import com.tcc.mensageria.R;
 
+/**
+ * View de detalhes de uma mensagem
+ */
 public class DetalhesMensagemActivity extends AppCompatActivity {
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     private static final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
