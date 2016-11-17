@@ -103,7 +103,6 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
             conexao.setRequestMethod("GET");
             conexao.connect();
 
-
             InputStream inputStream = conexao.getInputStream();
             StringBuffer buffer = new StringBuffer();
 
@@ -147,6 +146,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param JSON string para ser formatada
      */
     public void parseJson(String JSON) {
+        Log.d(TAG, "parseJson: ");
         if (JSON == null) {
             return;
         }
@@ -158,31 +158,46 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONArray jsonArray = new JSONArray(JSON);
 
             for (int i = 0; i < jsonArray.length(); i++) {
-
                 JSONObject objeto = jsonArray.getJSONObject(i);
-                long id = objeto.getLong("id");
-                String conteudo = objeto.getString("conteudo");
-                String titulo = objeto.getString("titulo");
-                //TODO fazer o favorito
-                boolean favorito = false;
 
-//                JSONObject remetente = objeto.getJSONObject("remetente");
-//                String nome = remetente.getString("nome");
-//                String email = remetente.getString("contato");
-                String nome = "Unigranrio";
-                String email = "email@email.com";
-                long idRemetente = addRemetente(nome, email);
+                JSONObject autor = objeto.getJSONObject("autor");
+                long idAutor = autor.getLong("id");
+                String nomeAutor = autor.getString("nome");
+                String email = autor.getString("email");
+
+                ContentValues valores = new ContentValues();
+                valores.put(MensageriaContract.Autores._ID, idAutor);
+                valores.put(MensageriaContract.Autores.COLUNA_NOME, nomeAutor);
+                valores.put(MensageriaContract.Autores.COLUNA_EMAIL, email);
+
+                idAutor = addAutor(valores);
+                valores.clear();
+
+                JSONObject conversa = objeto.getJSONObject("chat");
+                long idConversa = conversa.getLong("id");
+                String nomeConversa = conversa.getString("nome");
+                boolean interativa = conversa.getBoolean("interativa");
+
+                valores.put(MensageriaContract.Conversas._ID, idConversa);
+                valores.put(MensageriaContract.Conversas.COLUNA_NOME, nomeConversa);
+                valores.put(MensageriaContract.Conversas.COLUNA_INTERATIVA, interativa);
+
+                idConversa = addConversa(valores);
+                valores.clear();
+
+                long idMensagem = objeto.getLong("id");
+                String conteudo = objeto.getString("conteudo");
+                long dataEnvio = objeto.getLong("dataEnvio");
 
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(MensageriaContract.Mensagens._ID, id);
+                contentValues.put(MensageriaContract.Mensagens._ID, idMensagem);
                 contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, conteudo);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_TITULO, titulo);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO, favorito ? 1 : 0);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE, idRemetente);
+                contentValues.put(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, dataEnvio);
+                contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_AUTOR, idAutor);
+                contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_CONVERSA, idConversa);
                 listaMensagens.add(contentValues);
             }
             addMensagem(listaMensagens);
-
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -190,43 +205,67 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Metodo para adicionar remetentes via content provider
-     * @param nome nome do remetente
-     * @param email email do remetente
-     * @return o id do remetente inserido
+     * Metodo para adicionar autores via content provider
+     *
+     * @param valores dados para inserir na tabela
+     * @return o id do autor inserido
      */
-    private long addRemetente(String nome, String email) {
-        long idRemetente;
-
+    private long addAutor(ContentValues valores) {
+        long id;
         Cursor cursor = getContext().getContentResolver().query(
-                MensageriaContract.Remetentes.CONTENT_URI,
-                new String[]{MensageriaContract.Remetentes._ID},
-                MensageriaContract.Remetentes.COLUNA_EMAIL + " = ?",
-                new String[]{email},
+                MensageriaContract.Autores.CONTENT_URI,
+                new String[]{MensageriaContract.Autores._ID},
+                MensageriaContract.Autores.COLUNA_EMAIL + " = ?",
+                new String[]{valores.getAsString(MensageriaContract.Autores.COLUNA_EMAIL)},
                 null);
 
         if (cursor.moveToFirst()) {
-            int indexremetente = cursor.getColumnIndex(MensageriaContract.Remetentes._ID);
-            idRemetente = cursor.getLong(indexremetente);
+            int index = cursor.getColumnIndex(MensageriaContract.Autores._ID);
+            id = cursor.getLong(index);
         } else {
-            ContentValues valores = new ContentValues();
-            valores.put(MensageriaContract.Remetentes.COLUNA_NOME, nome);
-            valores.put(MensageriaContract.Remetentes.COLUNA_EMAIL, email);
-
             Uri uriInsercao = getContext().getContentResolver().insert(
-                    MensageriaContract.Remetentes.CONTENT_URI,
+                    MensageriaContract.Autores.CONTENT_URI,
                     valores
             );
 
-            idRemetente = ContentUris.parseId(uriInsercao);
+            id = ContentUris.parseId(uriInsercao);
         }
+        return id;
+    }
 
-        cursor.close();
-        return idRemetente;
+
+    /**
+     * Metodo para adicionar conversas via content provider
+     *
+     * @param valores dados para inserir na tabela
+     * @return o id da conversa inserida
+     */
+
+    private long addConversa(ContentValues valores) {
+        long id;
+        Cursor cursor = getContext().getContentResolver().query(
+                MensageriaContract.Conversas.CONTENT_URI,
+                new String[]{MensageriaContract.Conversas._ID},
+                MensageriaContract.Conversas._ID + " = ?",
+                new String[]{valores.getAsString(MensageriaContract.Conversas._ID)},
+                null);
+
+        if (cursor.moveToFirst()) {
+            int index = cursor.getColumnIndex(MensageriaContract.Conversas._ID);
+            id = cursor.getLong(index);
+        } else {
+            Uri uriInsercao = getContext().getContentResolver().insert(
+                    MensageriaContract.Conversas.CONTENT_URI,
+                    valores
+            );
+            id = ContentUris.parseId(uriInsercao);
+        }
+        return id;
     }
 
     /**
      * Metodo para adicionar mensagens via content provider
+     *
      * @param listaMensagens lista de mensagens para serem adicionadas no banco
      */
     private void addMensagem(Vector<ContentValues> listaMensagens) {

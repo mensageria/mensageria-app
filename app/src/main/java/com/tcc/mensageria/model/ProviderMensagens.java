@@ -19,24 +19,24 @@ public class ProviderMensagens extends ContentProvider {
     private MensageriaDbHelper mDBHelper;
 
     static final int MENSAGEM = 100;
-    static final int MENSAGEM_COM_REMETENTE = 101;
-    static final int REMETENTE = 200;
+    static final int MENSAGEM_COM_AUTOR = 101;
+    static final int AUTOR = 200;
+    static final int CONVERSA = 300;
 
-    private static final SQLiteQueryBuilder sMensagemComRemetenteQB;
+    private static final SQLiteQueryBuilder sMensagemComAutorQB;
 
-    // query que faz o join da tabela mensagem com a tabela remetente usando o id do remetente
+    // query que faz o join da tabela mensagem com a tabela autor usando o id do autor
     static {
-        sMensagemComRemetenteQB = new SQLiteQueryBuilder();
+        sMensagemComAutorQB = new SQLiteQueryBuilder();
 
-        //This is an inner join which looks like
-        //weather INNER JOIN location ON weather.location_id = location._id
-        sMensagemComRemetenteQB.setTables(
+
+        sMensagemComAutorQB.setTables(
                 MensageriaContract.Mensagens.NOME_TABELA + " INNER JOIN " +
-                        MensageriaContract.Remetentes.NOME_TABELA +
+                        MensageriaContract.Autores.NOME_TABELA +
                         " ON " + MensageriaContract.Mensagens.NOME_TABELA +
-                        "." + MensageriaContract.Mensagens.COLUNA_FK_REMETENTE +
-                        " = " + MensageriaContract.Remetentes.NOME_TABELA +
-                        "." + MensageriaContract.Remetentes._ID);
+                        "." + MensageriaContract.Mensagens.COLUNA_FK_AUTOR +
+                        " = " + MensageriaContract.Autores.NOME_TABELA +
+                        "." + MensageriaContract.Autores._ID);
     }
 
     /**
@@ -48,8 +48,9 @@ public class ProviderMensagens extends ContentProvider {
         final String authority = MensageriaContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM, MENSAGEM);
-        matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM + "/" + MensageriaContract.PATH_REMETENTE, MENSAGEM_COM_REMETENTE);
-        matcher.addURI(authority, MensageriaContract.PATH_REMETENTE, REMETENTE);
+        matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM + "/" + MensageriaContract.PATH_AUTOR, MENSAGEM_COM_AUTOR);
+        matcher.addURI(authority, MensageriaContract.PATH_AUTOR, AUTOR);
+        matcher.addURI(authority, MensageriaContract.PATH_CONVERSA, CONVERSA);
 
         return matcher;
     }
@@ -68,10 +69,12 @@ public class ProviderMensagens extends ContentProvider {
         switch (match) {
             case MENSAGEM:
                 return MensageriaContract.Mensagens.CONTENT_TYPE;
-            case MENSAGEM_COM_REMETENTE:
-                return MensageriaContract.Mensagens.CONTENT_TYPE_COM_REMETENTE;
-            case REMETENTE:
-                return MensageriaContract.Remetentes.CONTENT_TYPE;
+            case MENSAGEM_COM_AUTOR:
+                return MensageriaContract.Mensagens.CONTENT_TYPE_COM_AUTOR;
+            case AUTOR:
+                return MensageriaContract.Autores.CONTENT_TYPE;
+            case CONVERSA:
+                return MensageriaContract.Conversas.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("uri Desconhecida: " + uri);
         }
@@ -96,8 +99,8 @@ public class ProviderMensagens extends ContentProvider {
                 break;
             }
             // "mensagem/*"
-            case MENSAGEM_COM_REMETENTE: {
-                retCursor = sMensagemComRemetenteQB.query(mDBHelper.getReadableDatabase(),
+            case MENSAGEM_COM_AUTOR: {
+                retCursor = sMensagemComAutorQB.query(mDBHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -107,10 +110,23 @@ public class ProviderMensagens extends ContentProvider {
                 );
                 break;
             }
-            // "remetente"
-            case REMETENTE: {
+            // "autor"
+            case AUTOR: {
                 retCursor = mDBHelper.getReadableDatabase().query(
-                        MensageriaContract.Remetentes.NOME_TABELA,
+                        MensageriaContract.Autores.NOME_TABELA,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            // "conversa"
+            case CONVERSA: {
+                retCursor = mDBHelper.getReadableDatabase().query(
+                        MensageriaContract.Conversas.NOME_TABELA,
                         projection,
                         selection,
                         selectionArgs,
@@ -143,11 +159,20 @@ public class ProviderMensagens extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
-            // "remetente"
-            case REMETENTE: {
-                long _id = db.insert(MensageriaContract.Remetentes.NOME_TABELA, null, values);
+            // "autor"
+            case AUTOR: {
+                long _id = db.insert(MensageriaContract.Autores.NOME_TABELA, null, values);
                 if (_id > 0)
-                    returnUri = MensageriaContract.Mensagens.buildMensagemUri(_id);
+                    returnUri = MensageriaContract.Autores.buildAutorUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            // "conversa"
+            case CONVERSA: {
+                long _id = db.insert(MensageriaContract.Conversas.NOME_TABELA, null, values);
+                if (_id > 0)
+                    returnUri = MensageriaContract.Conversas.buildConversaUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -172,10 +197,15 @@ public class ProviderMensagens extends ContentProvider {
                 qtdDeletados = db.delete(
                         MensageriaContract.Mensagens.NOME_TABELA, selection, selectionArgs);
                 break;
-            // "remetente"
-            case REMETENTE:
+            // "autor"
+            case AUTOR:
                 qtdDeletados = db.delete(
-                        MensageriaContract.Remetentes.NOME_TABELA, selection, selectionArgs);
+                        MensageriaContract.Autores.NOME_TABELA, selection, selectionArgs);
+                break;
+            // "conversa"
+            case CONVERSA:
+                qtdDeletados = db.delete(
+                        MensageriaContract.Conversas.NOME_TABELA, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -200,9 +230,14 @@ public class ProviderMensagens extends ContentProvider {
                 qtdAtualizados = db.update(MensageriaContract.Mensagens.NOME_TABELA, values, selection,
                         selectionArgs);
                 break;
-            // "remetente"
-            case REMETENTE:
-                qtdAtualizados = db.update(MensageriaContract.Remetentes.NOME_TABELA, values, selection,
+            // "autor"
+            case AUTOR:
+                qtdAtualizados = db.update(MensageriaContract.Autores.NOME_TABELA, values, selection,
+                        selectionArgs);
+                break;
+            // "conversa"
+            case CONVERSA:
+                qtdAtualizados = db.update(MensageriaContract.Conversas.NOME_TABELA, values, selection,
                         selectionArgs);
                 break;
             default:

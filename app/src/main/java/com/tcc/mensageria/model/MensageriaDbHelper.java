@@ -20,26 +20,33 @@ public class MensageriaDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final String SQL_CREATE_TABELA_REMETENTE = "CREATE TABLE " + MensageriaContract.Remetentes.NOME_TABELA + "(" +
-                MensageriaContract.Remetentes._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MensageriaContract.Remetentes.COLUNA_NOME + " TEXT NOT NULL," +
-                MensageriaContract.Remetentes.COLUNA_EMAIL + " TEXT UNIQUE NOT NULL" +
+        final String SQL_CREATE_TABELA_AUTOR = "CREATE TABLE " + MensageriaContract.Autores.NOME_TABELA + "(" +
+                MensageriaContract.Autores._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MensageriaContract.Autores.COLUNA_NOME + " TEXT NOT NULL," +
+                MensageriaContract.Autores.COLUNA_EMAIL + " TEXT UNIQUE NOT NULL" +
                 ");";
 
+        final String SQL_CREATE_TABELA_CONVERSA = "CREATE TABLE " + MensageriaContract.Conversas.NOME_TABELA + "(" +
+                MensageriaContract.Conversas._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MensageriaContract.Conversas.COLUNA_NOME + " TEXT NOT NULL," +
+                MensageriaContract.Conversas.COLUNA_INTERATIVA + " INTEGER NOT NULL" +
+                ");";
 
         final String SQL_CREATE_TABELA_MENSAGENS = "CREATE TABLE " + MensageriaContract.Mensagens.NOME_TABELA + " (" +
                 MensageriaContract.Mensagens._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-
-                MensageriaContract.Mensagens.COLUNA_TITULO + " TEXT NOT NULL," +
                 MensageriaContract.Mensagens.COLUNA_CONTEUDO + " TEXT NOT NULL," +
-                MensageriaContract.Mensagens.COLUNA_FAVORITO + " INTEGER ," +
-                MensageriaContract.Mensagens.COLUNA_FK_REMETENTE + " INTEGER NOT NULL," +
+                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " INTEGER NOT NULL," +
+                MensageriaContract.Mensagens.COLUNA_FK_AUTOR + " INTEGER NOT NULL," +
+                MensageriaContract.Mensagens.COLUNA_FK_CONVERSA + " INTEGER NOT NULL," +
 
-                " FOREIGN KEY (" + MensageriaContract.Mensagens.COLUNA_FK_REMETENTE + ") REFERENCES " +
-                MensageriaContract.Remetentes.NOME_TABELA + " (" + MensageriaContract.Remetentes._ID + ") " +
+                " FOREIGN KEY (" + MensageriaContract.Mensagens.COLUNA_FK_AUTOR + ") REFERENCES " +
+                MensageriaContract.Autores.NOME_TABELA + " (" + MensageriaContract.Autores._ID + ") " +
+                " FOREIGN KEY (" + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA + ") REFERENCES " +
+                MensageriaContract.Conversas.NOME_TABELA + " (" + MensageriaContract.Conversas._ID + ") " +
                 ");";
 
-        sqLiteDatabase.execSQL(SQL_CREATE_TABELA_REMETENTE);
+        sqLiteDatabase.execSQL(SQL_CREATE_TABELA_AUTOR);
+        sqLiteDatabase.execSQL(SQL_CREATE_TABELA_CONVERSA);
         sqLiteDatabase.execSQL(SQL_CREATE_TABELA_MENSAGENS);
     }
 

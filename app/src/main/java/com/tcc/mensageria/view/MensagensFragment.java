@@ -2,13 +2,11 @@ package com.tcc.mensageria.view;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,18 +30,17 @@ public class MensagensFragment extends Fragment
     final String TAG = this.getClass().getSimpleName();
     final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
-    final String EXTRA_REMETENTE = "EXTRA_REMETENTE";
+    final String EXTRA_AUTOR = "EXTRA_AUTOR";
     final int LOADER_ID = 0;
 
     // colunas usadas para popular a lista
     final String[] COLUNAS_MENSAGEM = {
             MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
-            MensageriaContract.Mensagens.COLUNA_TITULO,
+            MensageriaContract.Mensagens.COLUNA_DATA_ENVIO,
             MensageriaContract.Mensagens.COLUNA_CONTEUDO,
-            MensageriaContract.Mensagens.COLUNA_FAVORITO,
-            MensageriaContract.Mensagens.COLUNA_FK_REMETENTE,
-            MensageriaContract.Remetentes.COLUNA_NOME,
-            MensageriaContract.Remetentes.COLUNA_EMAIL
+            MensageriaContract.Mensagens.COLUNA_FK_AUTOR,
+            MensageriaContract.Autores.COLUNA_NOME,
+            MensageriaContract.Autores.COLUNA_EMAIL
     };
     RecyclerView mRecyclerView;
     ListaAdapter mAdapter;
@@ -100,7 +97,7 @@ public class MensagensFragment extends Fragment
         Bundle extras = new Bundle();
         extras.putString(EXTRA_MENSAGEM,
                 item.getString(item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)));
-        extras.putString(EXTRA_REMETENTE, item.getString(item.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL)));
+        extras.putString(EXTRA_AUTOR, item.getString(item.getColumnIndex(MensageriaContract.Autores.COLUNA_EMAIL)));
 
         i.putExtra(BUNDLE_EXTRAS, extras);
 
@@ -109,27 +106,27 @@ public class MensagensFragment extends Fragment
 
     @Override
     public void onSecondaryIconClick(int p) {
-
-        Cursor item = mAdapter.getCursor();
-        int indexId = item.getColumnIndex(MensageriaContract.Mensagens._ID);
-        int indexConteudo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
-        int indexTitulo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
-        int indexFavorito = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
-        int indexRemetente = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE);
-
-        item.moveToPosition(p);
-
-        ContentValues contentValues = new ContentValues();
-        int id = item.getInt(indexId);
-        contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, item.getString(indexConteudo));
-        contentValues.put(MensageriaContract.Mensagens.COLUNA_TITULO, item.getString(indexTitulo));
-        int favorito = item.getInt(indexFavorito) == 0 ? 1 : 0;
-        contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO, favorito);
-        contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_REMETENTE, item.getInt(indexRemetente));
-
-        Uri uri = MensageriaContract.Mensagens.CONTENT_URI;
-        getActivity().getContentResolver().update(uri, contentValues, "_id = ?",
-                new String[]{Integer.toString(id)});
+//
+//        Cursor item = mAdapter.getCursor();
+//        int indexId = item.getColumnIndex(MensageriaContract.Mensagens._ID);
+//        int indexConteudo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
+//        int indexTitulo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO);
+//        int indexFavorito = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
+//        int indexAutor = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FK_AUTOR);
+//
+//        item.moveToPosition(p);
+//
+//        ContentValues contentValues = new ContentValues();
+//        int id = item.getInt(indexId);
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, item.getString(indexConteudo));
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, item.getString(indexTitulo));
+//        int favorito = item.getInt(indexFavorito) == 0 ? 1 : 0;
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO, favorito);
+//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_AUTOR, item.getInt(indexAutor));
+//
+//        Uri uri = MensageriaContract.Mensagens.CONTENT_URI;
+//        getActivity().getContentResolver().update(uri, contentValues, "_id = ?",
+//                new String[]{Integer.toString(id)});
     }
 
     /**
@@ -153,11 +150,11 @@ public class MensagensFragment extends Fragment
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(),
-                MensageriaContract.Mensagens.buildMensagemComRemetente(),
+                MensageriaContract.Mensagens.buildMensagemComAutor(),
                 COLUNAS_MENSAGEM,
                 null,
                 null,
-                COLUNAS_MENSAGEM[0] + " DESC");
+                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " ASC");
     }
 
     @Override

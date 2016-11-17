@@ -5,7 +5,7 @@
     <string name="title_activity_preferencias">Preferencias</string>
 
     <string name="view_vazia">Conexão com o servidor indisponivel</string>
-    <string name="descricao_foto">Foto do remetente da mensagem</string>
+    <string name="descricao_foto">Foto do autor da mensagem</string>
 
     <!-- strings relacionadas a configurações-->
     <string name="pref_endereco_key">Endereco</string>

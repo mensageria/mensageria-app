@@ -12,7 +12,7 @@ import com.tcc.mensageria.R;
 public class DetalhesMensagemActivity extends AppCompatActivity {
     private static final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
     private static final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
-    private static final String EXTRA_REMETENTE = "EXTRA_REMETENTE";
+    private static final String EXTRA_AUTOR = "EXTRA_AUTOR";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,6 @@ public class DetalhesMensagemActivity extends AppCompatActivity {
         Bundle extras = getIntent().getBundleExtra(BUNDLE_EXTRAS);
 
         ((TextView)findViewById(R.id.detalhes_conteudo)).setText(extras.getString(EXTRA_MENSAGEM));
-        ((TextView)findViewById(R.id.detalhes_remetente)).setText(extras.getString(EXTRA_REMETENTE));
+        ((TextView)findViewById(R.id.detalhes_autor)).setText(extras.getString(EXTRA_AUTOR));
     }
 }

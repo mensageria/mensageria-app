@@ -58,19 +58,15 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         }
 
         int indexConteudo = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
-        int indexTitulo = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_TITULO);
-        int indexFavorito = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
-        int indexEmailRemetente = mCursor.getColumnIndex(MensageriaContract.Remetentes.COLUNA_EMAIL);
+        int indexData = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO);
+        int indexEmailAutor = mCursor.getColumnIndex(MensageriaContract.Autores.COLUNA_EMAIL);
 
         mCursor.moveToPosition(posicao);
         holder.conteudo.setText(mCursor.getString(indexConteudo));
-        holder.titulo.setText(mCursor.getString(indexTitulo));
-        holder.emailRemetente.setText(mCursor.getString(indexEmailRemetente));
-        if (mCursor.getInt(indexFavorito) == 1) {
-            holder.favorito.setImageResource(R.drawable.ic_star_black_36dp);
-        } else {
-            holder.favorito.setImageResource(R.drawable.ic_star_border_black_36dp);
-        }
+        holder.emailAutor.setText(mCursor.getString(indexEmailAutor));
+
+        // temporario
+        holder.titulo.setText("Titulo");
     }
 
     @Override
@@ -143,7 +139,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         final ImageView favorito;
         final TextView conteudo;
         final TextView titulo;
-        final TextView emailRemetente;
+        final TextView emailAutor;
         final View container;
 
         public ListaViewHolder(View itemView) {
@@ -151,7 +147,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
             foto = (ImageView) itemView.findViewById(R.id.foto);
             favorito = (ImageView) itemView.findViewById(R.id.favorito);
             favorito.setOnClickListener(this);
-            emailRemetente = (TextView) itemView.findViewById(R.id.emailRemetente);
+            emailAutor = (TextView) itemView.findViewById(R.id.emailAutor);
             conteudo = (TextView) itemView.findViewById(R.id.conteudo);
             titulo = (TextView) itemView.findViewById(R.id.titulo);
             container = itemView.findViewById(R.id.container_mensagem);
