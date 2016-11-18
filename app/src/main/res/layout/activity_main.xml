@@ -10,6 +10,6 @@
         android:name="com.tcc.mensageria.view.MensagensFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_mensagens" />
+        tools:layout="@layout/fragment_conversas" />
 
 </RelativeLayout>

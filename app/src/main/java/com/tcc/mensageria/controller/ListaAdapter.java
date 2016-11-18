@@ -53,7 +53,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
 
     @Override
     public ListaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lista_mensagens, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lista_conversas, parent, false);
         return new ListaViewHolder(view);
     }
 
@@ -184,7 +184,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
             data = (TextView) itemView.findViewById(R.id.data);
             emailAutor = (TextView) itemView.findViewById(R.id.emailAutor);
             conteudo = (TextView) itemView.findViewById(R.id.conteudo);
-            titulo = (TextView) itemView.findViewById(R.id.titulo);
+            titulo = (TextView) itemView.findViewById(R.id.nome_autor);
             container = itemView.findViewById(R.id.container_mensagem);
             container.setOnClickListener(this);
         }

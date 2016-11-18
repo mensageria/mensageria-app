@@ -75,7 +75,7 @@ public class MensagensFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_mensagens, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_conversas, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lista_mensagens);
         mViewVazia = (TextView) rootView.findViewById(R.id.view_vazia);
 
