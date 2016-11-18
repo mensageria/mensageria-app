@@ -24,9 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/foto"
-        android:layout_toLeftOf="@+id/favorito"
+        android:layout_toLeftOf="@+id/data"
         android:layout_toEndOf="@+id/foto"
-        android:layout_toStartOf="@id/favorito"
+        android:layout_toStartOf="@id/data"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="titulo"
@@ -39,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/foto"
-        android:layout_toLeftOf="@+id/favorito"
+        android:layout_toLeftOf="@+id/data"
         android:layout_toEndOf="@+id/foto"
-        android:layout_toStartOf="@id/favorito"
+        android:layout_toStartOf="@id/data"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="Conteudo"
@@ -55,15 +55,25 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/conteudo"
         android:layout_toRightOf="@+id/foto"
-        android:layout_toLeftOf="@+id/favorito"
+        android:layout_toLeftOf="@+id/data"
         android:layout_toEndOf="@+id/foto"
-        android:layout_toStartOf="@id/favorito"
+        android:layout_toStartOf="@id/data"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="mail@mail"
         android:textSize="14sp" />
 
-    <ImageView
+   <TextView
+       android:id="@+id/data"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentEnd="true"
+       android:layout_centerVertical="true"
+       android:padding="16dp"
+       android:text="data"/>
+
+   <!-- <ImageView
         android:id="@+id/favorito"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -73,6 +83,6 @@
         android:clickable="true"
         android:padding="16dp"
         android:src="@drawable/ic_star_border_black_36dp"
-        />
+        />-->
 
 </RelativeLayout>

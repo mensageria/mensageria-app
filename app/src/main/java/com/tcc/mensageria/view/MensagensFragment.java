@@ -81,7 +81,7 @@ public class MensagensFragment extends Fragment
 
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ListaAdapter(null);
+        mAdapter = new ListaAdapter(null,getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setItemClickCallback(this);
 
@@ -154,7 +154,7 @@ public class MensagensFragment extends Fragment
                 COLUNAS_MENSAGEM,
                 null,
                 null,
-                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " ASC");
+                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " DESC");
     }
 
     @Override

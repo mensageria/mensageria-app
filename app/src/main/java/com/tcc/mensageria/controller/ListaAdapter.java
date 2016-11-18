@@ -1,5 +1,6 @@
 package com.tcc.mensageria.controller;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,11 @@ import android.widget.TextView;
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.model.MensageriaContract;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Adapter do recycler view de mensagens
  */
@@ -23,14 +29,15 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
     private int mRowIdColumn;
     private DataSetObserver mDataSetObserver;
     private ItemClickCallback mItemClickCallback;
+    private Context mContext;
 
-    public ListaAdapter(Cursor cursor) {
+    public ListaAdapter(Cursor cursor, Context context) {
+        mContext = context;
         mDataSetObserver = new NotifyingDataSetObserver();
         swapCursor(cursor);
     }
 
     /**
-     *
      * @return Cursor com os dados que o adapter usará para popular o recycler view
      */
     public Cursor getCursor() {
@@ -38,7 +45,6 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
     }
 
     /**
-     *
      * @param itemClickCallback Callback para lidar com cliques em um item da lista
      */
     public void setItemClickCallback(final ItemClickCallback itemClickCallback) {
@@ -53,7 +59,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
 
     @Override
     public void onBindViewHolder(ListaViewHolder holder, int posicao) {
-        if(mCursor == null){
+        if (mCursor == null) {
             return;
         }
 
@@ -64,9 +70,35 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         mCursor.moveToPosition(posicao);
         holder.conteudo.setText(mCursor.getString(indexConteudo));
         holder.emailAutor.setText(mCursor.getString(indexEmailAutor));
+        holder.data.setText(getDiasPassados(mCursor.getLong(indexData)));
 
         // temporario
         holder.titulo.setText("Titulo");
+    }
+
+    private String getDiasPassados(long dataMs) {
+        String mensagem;
+        Calendar data = Calendar.getInstance();
+        long ms = data.getTimeInMillis();
+        long diff = data.getTimeInMillis() - dataMs;
+        long dias = TimeUnit.MILLISECONDS.toDays(diff);
+
+        data.setTimeInMillis(dataMs);
+        Locale locale = Locale.getDefault();
+
+        if (dias < 1) {
+            mensagem = data.get(Calendar.HOUR_OF_DAY) + ":" + data.get(Calendar.MINUTE);
+        } else if (dias < 2) {
+            mensagem = mContext.getString(R.string.ontem);
+        } else if (dias < 7) {
+            mensagem = new SimpleDateFormat("EEE",locale).format(data.getTime());
+        }else if(dias < 365){
+            mensagem = new SimpleDateFormat("dd MMM",locale).format(data.getTime());
+        }
+        else {
+            mensagem = new SimpleDateFormat("dd/MM/yyyy",locale).format(data.getTime());
+        }
+        return mensagem;
     }
 
     @Override
@@ -102,6 +134,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
 
     /**
      * Troca o cursor atual
+     *
      * @param newCursor cursor com os novos dados
      * @return Cursor antigo
      */
@@ -136,7 +169,8 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
     class ListaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final ImageView foto;
-        final ImageView favorito;
+        //final ImageView favorito;
+        final TextView data;
         final TextView conteudo;
         final TextView titulo;
         final TextView emailAutor;
@@ -145,8 +179,9 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         public ListaViewHolder(View itemView) {
             super(itemView);
             foto = (ImageView) itemView.findViewById(R.id.foto);
-            favorito = (ImageView) itemView.findViewById(R.id.favorito);
-            favorito.setOnClickListener(this);
+//            favorito = (ImageView) itemView.findViewById(R.id.data);
+//            favorito.setOnClickListener(this);
+            data = (TextView) itemView.findViewById(R.id.data);
             emailAutor = (TextView) itemView.findViewById(R.id.emailAutor);
             conteudo = (TextView) itemView.findViewById(R.id.conteudo);
             titulo = (TextView) itemView.findViewById(R.id.titulo);

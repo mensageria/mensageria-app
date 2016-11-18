@@ -6,6 +6,7 @@
 
     <string name="view_vazia">Conexão com o servidor indisponivel</string>
     <string name="descricao_foto">Foto do autor da mensagem</string>
+    <string name="ontem">Ontem</string>
 
     <!-- strings relacionadas a configurações-->
     <string name="pref_endereco_key">Endereco</string>
