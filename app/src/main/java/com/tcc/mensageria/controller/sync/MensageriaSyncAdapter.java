@@ -179,7 +179,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
                 boolean interativa = conversa.getBoolean("interativa");
 
                 valores.put(MensageriaContract.Conversas._ID, idConversa);
-                valores.put(MensageriaContract.Conversas.COLUNA_NOME, nomeConversa);
+                valores.put(MensageriaContract.Conversas.COLUNA_TITULO, nomeConversa);
                 valores.put(MensageriaContract.Conversas.COLUNA_INTERATIVA, interativa);
 
                 idConversa = addConversa(valores);

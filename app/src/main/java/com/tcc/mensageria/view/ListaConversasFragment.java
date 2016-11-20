@@ -24,7 +24,7 @@ import com.tcc.mensageria.model.MensageriaContract;
 /**
  * Fragmento que contem uma lista de mensagens
  */
-public class MensagensFragment extends Fragment
+public class ListaConversasFragment extends Fragment
         implements ListaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
     final String TAG = this.getClass().getSimpleName();
@@ -34,14 +34,14 @@ public class MensagensFragment extends Fragment
     final int LOADER_ID = 0;
 
     // colunas usadas para popular a lista
-    final String[] COLUNAS_MENSAGEM = {
-            MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
+    final String[] COLUNAS = {
+            MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
             MensageriaContract.Mensagens.COLUNA_DATA_ENVIO,
             MensageriaContract.Mensagens.COLUNA_CONTEUDO,
-            MensageriaContract.Mensagens.COLUNA_FK_AUTOR,
             MensageriaContract.Autores.COLUNA_NOME,
-            MensageriaContract.Autores.COLUNA_EMAIL
+            MensageriaContract.Conversas.COLUNA_TITULO
     };
+
     RecyclerView mRecyclerView;
     ListaAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
@@ -75,13 +75,13 @@ public class MensagensFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_conversas, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lista_mensagens);
+        View rootView = inflater.inflate(R.layout.fragment_lista_conversas, container, false);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lista_conversas);
         mViewVazia = (TextView) rootView.findViewById(R.id.view_vazia);
 
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ListaAdapter(null,getActivity());
+        mAdapter = new ListaAdapter(null, getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setItemClickCallback(this);
 
@@ -92,15 +92,7 @@ public class MensagensFragment extends Fragment
     public void onItemClick(int p) {
         Cursor item = mAdapter.getCursor();
         item.moveToPosition(p);
-        Intent i = new Intent(mContext, com.tcc.mensageria.view.DetalhesMensagemActivity.class);
-
-        Bundle extras = new Bundle();
-        extras.putString(EXTRA_MENSAGEM,
-                item.getString(item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)));
-        extras.putString(EXTRA_AUTOR, item.getString(item.getColumnIndex(MensageriaContract.Autores.COLUNA_EMAIL)));
-
-        i.putExtra(BUNDLE_EXTRAS, extras);
-
+        Intent i = new Intent(mContext, ConversaActivity.class);
         startActivity(i);
     }
 
@@ -132,6 +124,7 @@ public class MensagensFragment extends Fragment
     /**
      * Metodo para verificar se o adapter tem dados para popular a view
      * caso nao haja dados uma mensagem é mostrada
+     *
      * @return false se a lista puder ser populada e true se nao puder
      */
     private boolean listaEstaVazia() {
@@ -149,9 +142,10 @@ public class MensagensFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Cursor cursor;
         return new CursorLoader(getActivity(),
-                MensageriaContract.Mensagens.buildMensagemComAutor(),
-                COLUNAS_MENSAGEM,
+                MensageriaContract.Conversas.buildConversacomAutorEMensagem(),
+                COLUNAS,
                 null,
                 null,
                 MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " DESC");

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container_mensagem"
+    android:id="@+id/container_conversa"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -19,7 +19,7 @@
         android:contentDescription="@string/descricao_foto"/>
 
     <TextView
-        android:id="@+id/nome_autor"
+        android:id="@+id/titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -47,7 +47,7 @@
         android:text="Conteudo "
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        android:layout_below="@+id/nome_autor"
+        android:layout_below="@+id/titulo"
         android:inputType="textMultiLine"/>
 
    <TextView

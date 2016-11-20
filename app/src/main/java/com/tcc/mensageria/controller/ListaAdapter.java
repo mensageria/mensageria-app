@@ -12,11 +12,7 @@ import android.widget.TextView;
 
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.model.MensageriaContract;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import com.tcc.mensageria.utils.Utility;
 
 /**
  * Adapter do recycler view de mensagens
@@ -65,40 +61,14 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
 
         int indexConteudo = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
         int indexData = mCursor.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO);
-        int indexEmailAutor = mCursor.getColumnIndex(MensageriaContract.Autores.COLUNA_EMAIL);
+        int indexNomeAutor = mCursor.getColumnIndex(MensageriaContract.Autores.COLUNA_NOME);
+        int indexTitulo = mCursor.getColumnIndex(MensageriaContract.Conversas.COLUNA_TITULO);
 
         mCursor.moveToPosition(posicao);
         holder.conteudo.setText(mCursor.getString(indexConteudo));
-        holder.emailAutor.setText(mCursor.getString(indexEmailAutor));
-        holder.data.setText(getDiasPassados(mCursor.getLong(indexData)));
-
-        // temporario
-        holder.titulo.setText("Titulo");
-    }
-
-    private String getDiasPassados(long dataMs) {
-        String mensagem;
-        Calendar data = Calendar.getInstance();
-        long ms = data.getTimeInMillis();
-        long diff = data.getTimeInMillis() - dataMs;
-        long dias = TimeUnit.MILLISECONDS.toDays(diff);
-
-        data.setTimeInMillis(dataMs);
-        Locale locale = Locale.getDefault();
-
-        if (dias < 1) {
-            mensagem = data.get(Calendar.HOUR_OF_DAY) + ":" + data.get(Calendar.MINUTE);
-        } else if (dias < 2) {
-            mensagem = mContext.getString(R.string.ontem);
-        } else if (dias < 7) {
-            mensagem = new SimpleDateFormat("EEE",locale).format(data.getTime());
-        }else if(dias < 365){
-            mensagem = new SimpleDateFormat("dd MMM",locale).format(data.getTime());
-        }
-        else {
-            mensagem = new SimpleDateFormat("dd/MM/yyyy",locale).format(data.getTime());
-        }
-        return mensagem;
+        holder.nomeAutor.setText(mCursor.getString(indexNomeAutor));
+        holder.titulo.setText(mCursor.getString(indexTitulo));
+        holder.data.setText(Utility.getDataFormatada(mCursor.getLong(indexData),mContext));
     }
 
     @Override
@@ -173,7 +143,7 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
         final TextView data;
         final TextView conteudo;
         final TextView titulo;
-        final TextView emailAutor;
+        final TextView nomeAutor;
         final View container;
 
         public ListaViewHolder(View itemView) {
@@ -182,16 +152,16 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ListaViewHol
 //            favorito = (ImageView) itemView.findViewById(R.id.data);
 //            favorito.setOnClickListener(this);
             data = (TextView) itemView.findViewById(R.id.data);
-            emailAutor = (TextView) itemView.findViewById(R.id.emailAutor);
+            nomeAutor = (TextView) itemView.findViewById(R.id.nome_autor);
             conteudo = (TextView) itemView.findViewById(R.id.conteudo);
-            titulo = (TextView) itemView.findViewById(R.id.nome_autor);
-            container = itemView.findViewById(R.id.container_mensagem);
+            titulo = (TextView) itemView.findViewById(R.id.titulo);
+            container = itemView.findViewById(R.id.container_conversa);
             container.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.container_mensagem) {
+            if (v.getId() == R.id.container_conversa) {
                 mItemClickCallback.onItemClick(getAdapterPosition());
             } else {
                 mItemClickCallback.onSecondaryIconClick(getAdapterPosition());

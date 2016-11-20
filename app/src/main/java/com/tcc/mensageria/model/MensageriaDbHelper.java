@@ -28,7 +28,7 @@ public class MensageriaDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_TABELA_CONVERSA = "CREATE TABLE " + MensageriaContract.Conversas.NOME_TABELA + "(" +
                 MensageriaContract.Conversas._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MensageriaContract.Conversas.COLUNA_NOME + " TEXT NOT NULL," +
+                MensageriaContract.Conversas.COLUNA_TITULO + " TEXT NOT NULL," +
                 MensageriaContract.Conversas.COLUNA_INTERATIVA + " INTEGER NOT NULL" +
                 ");";
 

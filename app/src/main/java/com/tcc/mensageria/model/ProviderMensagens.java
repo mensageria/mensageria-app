@@ -22,10 +22,12 @@ public class ProviderMensagens extends ContentProvider {
     static final int MENSAGEM_COM_AUTOR = 101;
     static final int AUTOR = 200;
     static final int CONVERSA = 300;
+    static final int CONVERSA_COM_AUTOR_E_MENSAGEM = 301;
 
     private static final SQLiteQueryBuilder sMensagemComAutorQB;
+    private static final SQLiteQueryBuilder sConversacomAutorEMensagemQB;
 
-    // query que faz o join da tabela mensagem com a tabela autor usando o id do autor
+    // query que faz o join da tabela mensagem com a tabela autores usando o id do autor
     static {
         sMensagemComAutorQB = new SQLiteQueryBuilder();
 
@@ -39,8 +41,26 @@ public class ProviderMensagens extends ContentProvider {
                         "." + MensageriaContract.Autores._ID);
     }
 
+    // query que faz o join da tabela mensagem com a tabela autorers e conversas
+    static {
+        sConversacomAutorEMensagemQB = new SQLiteQueryBuilder();
+
+        // select * from conversas, mensagens, autores where conversas._id = mensagens.fk_conversa group by mensagens.fk_conversa
+        sConversacomAutorEMensagemQB.setTables(
+                MensageriaContract.Conversas.NOME_TABELA + ", " +
+                        MensageriaContract.Autores.NOME_TABELA + ", " +
+                        MensageriaContract.Mensagens.NOME_TABELA +
+                        " WHERE " +
+                        MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Conversas._ID +
+                        " = " +
+                        MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
+                        " GROUP BY " +
+                        MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA);
+    }
+
     /**
      * Cria um validador com as uris usadas pelo content provider para acessar os dados
+     *
      * @return um validador de uris com as uris criadas
      */
     static UriMatcher buildUriMatcher() {
@@ -48,9 +68,14 @@ public class ProviderMensagens extends ContentProvider {
         final String authority = MensageriaContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM, MENSAGEM);
-        matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM + "/" + MensageriaContract.PATH_AUTOR, MENSAGEM_COM_AUTOR);
-        matcher.addURI(authority, MensageriaContract.PATH_AUTOR, AUTOR);
+        matcher.addURI(authority, MensageriaContract.PATH_MENSAGEM + "/" +
+                MensageriaContract.PATH_AUTOR, MENSAGEM_COM_AUTOR);
+
         matcher.addURI(authority, MensageriaContract.PATH_CONVERSA, CONVERSA);
+        matcher.addURI(authority, MensageriaContract.PATH_CONVERSA + "/" +
+                MensageriaContract.PATH_AUTOR + "/" + MensageriaContract.PATH_MENSAGEM, CONVERSA_COM_AUTOR_E_MENSAGEM);
+
+        matcher.addURI(authority, MensageriaContract.PATH_AUTOR, AUTOR);
 
         return matcher;
     }
@@ -71,6 +96,8 @@ public class ProviderMensagens extends ContentProvider {
                 return MensageriaContract.Mensagens.CONTENT_TYPE;
             case MENSAGEM_COM_AUTOR:
                 return MensageriaContract.Mensagens.CONTENT_TYPE_COM_AUTOR;
+            case CONVERSA_COM_AUTOR_E_MENSAGEM:
+                return MensageriaContract.Mensagens.CONTENT_TYPE_COM_AUTOR_E_CONVERSA;
             case AUTOR:
                 return MensageriaContract.Autores.CONTENT_TYPE;
             case CONVERSA:
@@ -98,9 +125,22 @@ public class ProviderMensagens extends ContentProvider {
                 );
                 break;
             }
-            // "mensagem/*"
+            // "mensagem/autor"
             case MENSAGEM_COM_AUTOR: {
                 retCursor = sMensagemComAutorQB.query(mDBHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+
+            // "mensagem/autor/conversa"
+            case CONVERSA_COM_AUTOR_E_MENSAGEM: {
+                retCursor = sConversacomAutorEMensagemQB.query(mDBHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,

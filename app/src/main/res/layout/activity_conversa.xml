@@ -8,13 +8,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.tcc.mensageria.view.DetalhesMensagemActivity">
+    tools:context="com.tcc.mensageria.view.ConversaActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Titulo"
-        android:textSize="40sp"
+        android:textSize="@dimen/texto_grande"
         android:gravity="center"/>
 
     <RelativeLayout
@@ -66,13 +66,12 @@
         android:layout_height="wrap_content"
         android:text="conteudo"/>
 
-    <fragment
-
+  <!--  <fragment
         android:id="@+id/fragmento_mensagens"
-        android:name="com.tcc.mensageria.view.DetalhesMensagemFragment"
+        android:name="com.tcc.mensageria.view.ConversaFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_detalhes_mensagens" />
+        tools:layout="@layout/fragment_conversa" />-->
 
 
 </LinearLayout>

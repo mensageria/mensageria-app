@@ -69,7 +69,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".view.DetalhesMensagemActivity"></activity>
+        <activity android:name=".view.ConversaActivity"></activity>
     </application>
 
 </manifest>

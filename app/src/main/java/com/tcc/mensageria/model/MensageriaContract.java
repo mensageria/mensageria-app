@@ -31,6 +31,10 @@ public class MensageriaContract {
         public static final String CONTENT_TYPE_COM_AUTOR =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MENSAGEM +
                         "/" + PATH_AUTOR;
+        public static final String CONTENT_TYPE_COM_AUTOR_E_CONVERSA =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MENSAGEM +
+                        "/" + PATH_AUTOR + "/" + PATH_CONVERSA;
+
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MENSAGEM;
 
@@ -110,7 +114,7 @@ public class MensageriaContract {
 
         public static final String NOME_TABELA = "conversas";
 
-        public static final String COLUNA_NOME = "nome";
+        public static final String COLUNA_TITULO = "titulo";
 
         public static final String COLUNA_INTERATIVA = "interativa";
 
@@ -121,6 +125,14 @@ public class MensageriaContract {
          */
         public static Uri buildConversaUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        /**
+         * Constroi a uri do join entre a tabela mensagem, autor e conversa
+         * @return uri para acessar o join
+         */
+        public static Uri buildConversacomAutorEMensagem() {
+            return CONTENT_URI.buildUpon().appendPath(PATH_AUTOR).appendPath(PATH_MENSAGEM).build();
         }
     }
 }
