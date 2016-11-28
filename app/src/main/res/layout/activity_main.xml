@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tcc.mensageria.view.MainActivity">
+    tools:context="com.tcc.mensageria.view.activity.MainActivity">
 
     <fragment
         android:id="@+id/fragmento_conversa"
-        android:name="com.tcc.mensageria.view.ListaConversasFragment"
+        android:name="com.tcc.mensageria.view.fragment.ListaConversasFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_lista_conversas" />

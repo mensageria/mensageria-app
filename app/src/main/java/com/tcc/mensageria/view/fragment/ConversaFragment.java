@@ -1,4 +1,4 @@
-package com.tcc.mensageria.view;
+package com.tcc.mensageria.view.fragment;
 
 
 import android.database.Cursor;
@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.controller.MensagensAdapter;
+import com.tcc.mensageria.view.adapter.MensagensAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
 
 

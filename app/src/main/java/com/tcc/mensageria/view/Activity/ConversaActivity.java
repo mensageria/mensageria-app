@@ -1,4 +1,4 @@
-package com.tcc.mensageria.view;
+package com.tcc.mensageria.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.tcc.mensageria.R;
+import com.tcc.mensageria.view.fragment.ConversaFragment;
 
 /**
  * View de detalhes de uma mensagem

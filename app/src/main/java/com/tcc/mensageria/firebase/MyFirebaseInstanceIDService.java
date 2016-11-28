@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tcc.mensageria.controller.Firebase;
+package com.tcc.mensageria.firebase;
 
 import android.util.Log;
 

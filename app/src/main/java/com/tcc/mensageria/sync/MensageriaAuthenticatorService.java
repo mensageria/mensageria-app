@@ -1,4 +1,4 @@
-package com.tcc.mensageria.controller.sync;
+package com.tcc.mensageria.sync;
 
 
 import android.app.Service;

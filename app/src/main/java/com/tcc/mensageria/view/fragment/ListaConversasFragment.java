@@ -1,4 +1,4 @@
-package com.tcc.mensageria.view;
+package com.tcc.mensageria.view.fragment;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -16,9 +16,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.controller.ListaConversaAdapter;
-import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
+import com.tcc.mensageria.view.adapter.ListaConversaAdapter;
+import com.tcc.mensageria.sync.MensageriaSyncAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
+import com.tcc.mensageria.view.activity.ConversaActivity;
 
 /**
  * Fragmento que contem uma lista de mensagens

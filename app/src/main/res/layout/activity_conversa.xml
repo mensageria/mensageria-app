@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tcc.mensageria.view.ConversaActivity"
+    tools:context="com.tcc.mensageria.view.activity.ConversaActivity"
     android:id="@+id/container_conversa">
 
 </FrameLayout>

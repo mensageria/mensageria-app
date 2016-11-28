@@ -1,4 +1,4 @@
-package com.tcc.mensageria.controller;
+package com.tcc.mensageria.view.adapter;
 
 import android.content.Context;
 import android.database.Cursor;

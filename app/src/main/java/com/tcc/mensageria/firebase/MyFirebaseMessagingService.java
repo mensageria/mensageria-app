@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tcc.mensageria.controller.Firebase;
+package com.tcc.mensageria.firebase;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -28,8 +28,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
-import com.tcc.mensageria.view.MainActivity;
+import com.tcc.mensageria.sync.MensageriaSyncAdapter;
+import com.tcc.mensageria.view.activity.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 

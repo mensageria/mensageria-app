@@ -1,4 +1,4 @@
-package com.tcc.mensageria.view;
+package com.tcc.mensageria.view.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.tcc.mensageria.controller.sync;
+package com.tcc.mensageria.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -23,7 +23,7 @@ import android.util.Log;
 
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.model.MensageriaContract;
-import com.tcc.mensageria.view.MainActivity;
+import com.tcc.mensageria.view.activity.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
