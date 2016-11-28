@@ -31,7 +31,6 @@ public class ProviderMensagens extends ContentProvider {
     static {
         sMensagemComAutorQB = new SQLiteQueryBuilder();
 
-
         sMensagemComAutorQB.setTables(
                 MensageriaContract.Mensagens.NOME_TABELA + " INNER JOIN " +
                         MensageriaContract.Autores.NOME_TABELA +
@@ -41,7 +40,7 @@ public class ProviderMensagens extends ContentProvider {
                         "." + MensageriaContract.Autores._ID);
     }
 
-    // query que faz o join da tabela mensagem com a tabela autorers e conversas
+    // query que faz o join da tabela mensagem com a tabela autores e conversas
     static {
         sConversacomAutorEMensagemQB = new SQLiteQueryBuilder();
 
@@ -49,13 +48,7 @@ public class ProviderMensagens extends ContentProvider {
         sConversacomAutorEMensagemQB.setTables(
                 MensageriaContract.Conversas.NOME_TABELA + ", " +
                         MensageriaContract.Autores.NOME_TABELA + ", " +
-                        MensageriaContract.Mensagens.NOME_TABELA +
-                        " WHERE " +
-                        MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Conversas._ID +
-                        " = " +
-                        MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
-                        " GROUP BY " +
-                        MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA);
+                        MensageriaContract.Mensagens.NOME_TABELA);
     }
 
     /**

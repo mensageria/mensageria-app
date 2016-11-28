@@ -6,7 +6,7 @@
     tools:context="com.tcc.mensageria.view.MainActivity">
 
     <fragment
-        android:id="@+id/fragmento_mensagens"
+        android:id="@+id/fragmento_conversa"
         android:name="com.tcc.mensageria.view.ListaConversasFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

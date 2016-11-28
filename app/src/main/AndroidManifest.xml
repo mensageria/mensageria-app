@@ -69,7 +69,11 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".view.ConversaActivity"></activity>
+        <activity android:name=".view.ConversaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,63 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container_conversa"
-    android:layout_width="match_parent"
+    android:id="@+id/container_item_lista"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    >
-
-    <ImageView
-        android:id="@+id/foto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:src="@drawable/ic_account_circle_black_48dp"
-        android:contentDescription="@string/descricao_foto"/>
+    android:layout_marginTop="@dimen/fab_margin"
+    android:layout_marginRight="@dimen/padding"
+    android:background="@drawable/out_message_bg"
+    android:clickable="true">
 
     <TextView
-        android:id="@+id/titulo"
-        android:layout_width="match_parent"
+        android:id="@+id/nome_autor"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/foto"
-        android:layout_toLeftOf="@+id/data"
-        android:layout_toEndOf="@+id/foto"
-        android:layout_toStartOf="@id/data"
         android:ellipsize="end"
-        android:singleLine="true"
-        android:text="nome"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
-
+        android:text="nome do autor" />
 
     <TextView
         android:id="@+id/conteudo"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/foto"
-        android:layout_toLeftOf="@+id/data"
-        android:layout_toEndOf="@+id/foto"
-        android:layout_toStartOf="@id/data"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/nome_autor"
         android:ellipsize="end"
-        android:singleLine="true"
         android:text="Conteudo "
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:layout_below="@+id/titulo"
-        android:inputType="textMultiLine"/>
+        android:textColor="@android:color/black" />
 
-   <TextView
-       android:id="@+id/data"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentRight="true"
-       android:layout_alignParentEnd="true"
-       android:layout_centerVertical="true"
-       android:padding="16dp"
-       android:text="data"/>
 
+    <TextView
+        android:id="@+id/data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/conteudo"
+        android:text="12/12/1212" />
 </RelativeLayout>
+

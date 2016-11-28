@@ -2,7 +2,6 @@ package com.tcc.mensageria.view;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -17,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.controller.ListaAdapter;
+import com.tcc.mensageria.controller.ListaConversaAdapter;
 import com.tcc.mensageria.controller.sync.MensageriaSyncAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
 
@@ -25,34 +24,20 @@ import com.tcc.mensageria.model.MensageriaContract;
  * Fragmento que contem uma lista de mensagens
  */
 public class ListaConversasFragment extends Fragment
-        implements ListaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
+        implements ListaConversaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
 
     final String TAG = this.getClass().getSimpleName();
-    final String BUNDLE_EXTRAS = "BUNDLE_EXTRAS";
-    final String EXTRA_MENSAGEM = "EXTRA_MENSAGEM";
-    final String EXTRA_AUTOR = "EXTRA_AUTOR";
     final int LOADER_ID = 0;
 
-    // colunas usadas para popular a lista
-    final String[] COLUNAS = {
-            MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
-            MensageriaContract.Mensagens.COLUNA_DATA_ENVIO,
-            MensageriaContract.Mensagens.COLUNA_CONTEUDO,
-            MensageriaContract.Autores.COLUNA_NOME,
-            MensageriaContract.Conversas.COLUNA_TITULO
-    };
-
     RecyclerView mRecyclerView;
-    ListaAdapter mAdapter;
+    ListaConversaAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     TextView mViewVazia;
-    Context mContext;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
         setHasOptionsMenu(true);
     }
 
@@ -79,9 +64,9 @@ public class ListaConversasFragment extends Fragment
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.lista_conversas);
         mViewVazia = (TextView) rootView.findViewById(R.id.view_vazia);
 
-        mLayoutManager = new LinearLayoutManager(mContext);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ListaAdapter(null, getActivity());
+        mAdapter = new ListaConversaAdapter(null, getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setItemClickCallback(this);
 
@@ -92,33 +77,14 @@ public class ListaConversasFragment extends Fragment
     public void onItemClick(int p) {
         Cursor item = mAdapter.getCursor();
         item.moveToPosition(p);
-        Intent i = new Intent(mContext, ConversaActivity.class);
+        Intent i = new Intent(getActivity(), ConversaActivity.class);
+        i.putExtra(ConversaFragment.BUNDLE_ID_CONVERSA,
+                item.getInt(item.getColumnIndex(MensageriaContract.Conversas._ID)));
         startActivity(i);
     }
 
     @Override
     public void onSecondaryIconClick(int p) {
-//
-//        Cursor item = mAdapter.getCursor();
-//        int indexId = item.getColumnIndex(MensageriaContract.Mensagens._ID);
-//        int indexConteudo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO);
-//        int indexTitulo = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO);
-//        int indexFavorito = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FAVORITO);
-//        int indexAutor = item.getColumnIndex(MensageriaContract.Mensagens.COLUNA_FK_AUTOR);
-//
-//        item.moveToPosition(p);
-//
-//        ContentValues contentValues = new ContentValues();
-//        int id = item.getInt(indexId);
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, item.getString(indexConteudo));
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, item.getString(indexTitulo));
-//        int favorito = item.getInt(indexFavorito) == 0 ? 1 : 0;
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FAVORITO, favorito);
-//        contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_AUTOR, item.getInt(indexAutor));
-//
-//        Uri uri = MensageriaContract.Mensagens.CONTENT_URI;
-//        getActivity().getContentResolver().update(uri, contentValues, "_id = ?",
-//                new String[]{Integer.toString(id)});
     }
 
     /**
@@ -142,13 +108,29 @@ public class ListaConversasFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Cursor cursor;
+        String[] COLUNAS = {
+                MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID,
+                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO,
+                MensageriaContract.Mensagens.COLUNA_CONTEUDO,
+                MensageriaContract.Autores.COLUNA_NOME,
+                MensageriaContract.Conversas.COLUNA_TITULO
+        };
+
+        // conversas._id = mensagens.fk_conversa group by fk_conversa
+        String selection = MensageriaContract.Conversas.NOME_TABELA + "." +
+                MensageriaContract.Conversas._ID +
+                " = " + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
+                ") GROUP BY (" + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA;
+
+        String orderBy = MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " DESC";
+
         return new CursorLoader(getActivity(),
                 MensageriaContract.Conversas.buildConversacomAutorEMensagem(),
                 COLUNAS,
+                selection,
                 null,
-                null,
-                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " DESC");
+                orderBy
+        );
     }
 
     @Override

@@ -1,78 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.tcc.mensageria.view.ConversaActivity">
+    android:orientation="vertical"
+    tools:context="com.tcc.mensageria.view.ConversaActivity"
+    android:id="@+id/container_conversa">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Titulo"
-        android:textSize="@dimen/texto_grande"
-        android:gravity="center"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding"
-        >
-        <ImageView
-            android:id="@+id/foto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingRight="@dimen/padding"
-            android:src="@drawable/ic_account_circle_black_48dp"
-            android:contentDescription="@string/descricao_foto"/>
-
-        <TextView
-            android:id="@+id/detalhes_nome_autor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="italic"
-            android:text="Nome do autor"
-            android:layout_toRightOf="@id/foto"/>
-
-        <TextView
-            android:id="@+id/detalhes_email_autor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="italic"
-            android:text="email@email"
-            android:layout_toRightOf="@id/foto"
-            android:layout_below="@id/detalhes_nome_autor"/>
-
-        <TextView
-            android:id="@+id/detalhes_hora"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="italic"
-            android:text="12:12"
-            android:layout_toRightOf="@id/foto"
-            android:layout_below="@id/detalhes_email_autor"/>
-
-    </RelativeLayout>
-
-    <TextView
-        android:gravity="center"
-        android:id="@+id/detalhes_conteudo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="conteudo"/>
-
-  <!--  <fragment
-        android:id="@+id/fragmento_mensagens"
-        android:name="com.tcc.mensageria.view.ConversaFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/fragment_conversa" />-->
-
-
-</LinearLayout>
+</FrameLayout>
 

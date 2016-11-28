@@ -3,7 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="padding">16dp</dimen>
+    <dimen name="padding">12dp</dimen>
     <dimen name="texto_grande">40sp</dimen>
     <dimen name="texto_medio">20sp</dimen>
+    <dimen name="texto_pequeno">16sp</dimen>
 </resources>
