@@ -22,22 +22,25 @@ public class MensageriaDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String SQL_CREATE_TABELA_AUTOR = "CREATE TABLE " + MensageriaContract.Autores.NOME_TABELA + "(" +
                 MensageriaContract.Autores._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MensageriaContract.Autores.COLUNA_NOME + " TEXT NOT NULL," +
-                MensageriaContract.Autores.COLUNA_EMAIL + " TEXT UNIQUE NOT NULL" +
+                MensageriaContract.Autores.COLUNA_NOME + " TEXT ," +
+                MensageriaContract.Autores.COLUNA_EMAIL + " TEXT UNIQUE ," +
+                MensageriaContract.Autores.COLUNA_EMAIL_CONFIRMADO + " INTEGER ," +
+                MensageriaContract.Autores.COLUNA_ULTIMO_ACESSO + " INTEGER " +
                 ");";
 
         final String SQL_CREATE_TABELA_CONVERSA = "CREATE TABLE " + MensageriaContract.Conversas.NOME_TABELA + "(" +
                 MensageriaContract.Conversas._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MensageriaContract.Conversas.COLUNA_TITULO + " TEXT NOT NULL," +
-                MensageriaContract.Conversas.COLUNA_INTERATIVA + " INTEGER NOT NULL" +
+                MensageriaContract.Conversas.COLUNA_TITULO + " TEXT," +
+                MensageriaContract.Conversas.COLUNA_DATA_CRIACAO + " INTEGER," +
+                MensageriaContract.Conversas.COLUNA_INTERATIVA + " INTEGER " +
                 ");";
 
         final String SQL_CREATE_TABELA_MENSAGENS = "CREATE TABLE " + MensageriaContract.Mensagens.NOME_TABELA + " (" +
                 MensageriaContract.Mensagens._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MensageriaContract.Mensagens.COLUNA_CONTEUDO + " TEXT NOT NULL," +
-                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " INTEGER NOT NULL," +
-                MensageriaContract.Mensagens.COLUNA_FK_AUTOR + " INTEGER NOT NULL," +
-                MensageriaContract.Mensagens.COLUNA_FK_CONVERSA + " INTEGER NOT NULL," +
+                MensageriaContract.Mensagens.COLUNA_CONTEUDO + " TEXT ," +
+                MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " INTEGER," +
+                MensageriaContract.Mensagens.COLUNA_FK_AUTOR + " INTEGER ," +
+                MensageriaContract.Mensagens.COLUNA_FK_CONVERSA + " INTEGER ," +
 
                 " FOREIGN KEY (" + MensageriaContract.Mensagens.COLUNA_FK_AUTOR + ") REFERENCES " +
                 MensageriaContract.Autores.NOME_TABELA + " (" + MensageriaContract.Autores._ID + ") " +

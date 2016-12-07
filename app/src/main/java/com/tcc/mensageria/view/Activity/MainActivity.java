@@ -3,9 +3,11 @@ package com.tcc.mensageria.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.tcc.mensageria.R;
 
 /**
@@ -13,11 +15,13 @@ import com.tcc.mensageria.R;
  */
 public class MainActivity extends AppCompatActivity {
 
+    final String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
     }
 
     //TODO verificar se o google play services existe no onresume e no oncreate
@@ -46,10 +50,16 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this,PreferenciasActivity.class));
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, PreferenciasActivity.class));
+                return true;
+
+            case R.id.action_sign_out:
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(this, SignInActivity.class);
+                startActivity(intent);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

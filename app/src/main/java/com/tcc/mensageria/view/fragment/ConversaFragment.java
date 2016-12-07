@@ -3,20 +3,28 @@ package com.tcc.mensageria.view.fragment;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.view.adapter.MensagensAdapter;
 import com.tcc.mensageria.model.MensageriaContract;
+import com.tcc.mensageria.network.SocketConversa;
+import com.tcc.mensageria.view.adapter.MensagensAdapter;
 
 
 public class ConversaFragment extends Fragment implements MensagensAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
@@ -25,11 +33,19 @@ public class ConversaFragment extends Fragment implements MensagensAdapter.ItemC
     final int LOADER_ID = 1;
     public static String BUNDLE_ID_CONVERSA = "BUNDLE_ID_CONVERSA";
 
-    int mIdConversa = 1;
+
     RecyclerView mRecyclerView;
     MensagensAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     TextView mViewVazia;
+
+    int mIdConversa;
+    SocketConversa mSocketConversa;
+
+    private static final int TYPING_TIMER_LENGTH = 600;
+    private EditText mInputMessageView;
+    private boolean mTyping = false;
+    private Handler mTypingHandler = new Handler();
 
 
     @Override
@@ -41,6 +57,8 @@ public class ConversaFragment extends Fragment implements MensagensAdapter.ItemC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         mIdConversa = getArguments().getInt(BUNDLE_ID_CONVERSA);
+        mSocketConversa = new SocketConversa(getActivity(), mIdConversa);
+
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
     }
@@ -58,9 +76,68 @@ public class ConversaFragment extends Fragment implements MensagensAdapter.ItemC
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setItemClickCallback(this);
 
+        mInputMessageView = (EditText) rootView.findViewById(R.id.mensagem_input);
+        mInputMessageView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int id, KeyEvent event) {
+                if (id == R.id.send || id == EditorInfo.IME_NULL) {
+                    enviarMensagem();
+                    return true;
+                }
+                return false;
+            }
+        });
+        mInputMessageView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!mSocketConversa.getSocket().connected()) return;
+
+                if (!mTyping) {
+                    mTyping = true;
+                    mSocketConversa.getSocket().emit("typing");
+                }
+
+                mTypingHandler.removeCallbacks(onTypingTimeout);
+                mTypingHandler.postDelayed(onTypingTimeout, TYPING_TIMER_LENGTH);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        ImageButton sendButton = (ImageButton) rootView.findViewById(R.id.botao_enviar);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enviarMensagem();
+            }
+        });
+
         return rootView;
     }
 
+    private void enviarMensagem() {
+        if (mSocketConversa.tentarEnvio(mInputMessageView.getText().toString().trim())) {
+            mInputMessageView.setText("");
+        } else {
+            mInputMessageView.requestFocus();
+        }
+    }
+
+
+    private Runnable onTypingTimeout = new Runnable() {
+        @Override
+        public void run() {
+            if (!mTyping) return;
+            mTyping = false;
+            mSocketConversa.getSocket().emit("stop typing");
+        }
+    };
 
     /**
      * Metodo para verificar se o adapter tem dados para popular a view

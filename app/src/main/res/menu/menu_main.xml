@@ -5,10 +5,15 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_preferencias"
         app:showAsAction="never" />
 
     <item android:id="@+id/action_refresh"
-        android:title="@string/action_refresh"
+        android:title="@string/action_atualizar"
         app:showAsAction="never" />
+
+    <item android:id="@+id/action_sign_out"
+        android:title="@string/action_sair"
+        app:showAsAction="never"
+        android:orderInCategory="101"/>
 </menu>

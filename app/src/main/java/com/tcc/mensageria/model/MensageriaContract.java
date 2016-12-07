@@ -48,9 +48,9 @@ public class MensageriaContract {
 
         public static final String COLUNA_FK_CONVERSA = "fk_conversa";
 
-
         /**
          * Constroi a uri para acessar uma mensagem atraves do content provider
+         *
          * @param id id da mensagem desejada
          * @return uri para acessar a mensagem no banco
          */
@@ -60,6 +60,7 @@ public class MensageriaContract {
 
         /**
          * Constroi a uri do join entre a tabela mensagem com a tabela autor
+         *
          * @return uri para acessar mensagens com dados dos repectivos autores
          */
         public static Uri buildMensagemComAutor() {
@@ -86,11 +87,17 @@ public class MensageriaContract {
 
         public static final String COLUNA_EMAIL = "email";
 
+        public static final String COLUNA_EMAIL_CONFIRMADO = "email_confirmado";
+
+        public static final String COLUNA_ULTIMO_ACESSO = "ultimo_acesso";
+
+
         //TODO colocar foto do perfil
         //public static final String COLUNA_IMAGEM = "imagem";
 
         /**
          * Constroi a uri para acessar um autor atraves do content provider
+         *
          * @param id id do autor desejado
          * @return uri para acessar o autor no banco
          */
@@ -118,8 +125,11 @@ public class MensageriaContract {
 
         public static final String COLUNA_INTERATIVA = "interativa";
 
+        public static final String COLUNA_DATA_CRIACAO = "data_criacao";
+
         /**
          * Constroi a uri para acessar uma conversa atraves do content provider
+         *
          * @param id id da conversa desejado
          * @return uri para acessar a conversa no banco
          */
@@ -129,6 +139,7 @@ public class MensageriaContract {
 
         /**
          * Constroi a uri do join entre a tabela mensagem, autor e conversa
+         *
          * @return uri para acessar o join
          */
         public static Uri buildConversacomAutorEMensagem() {

@@ -7,35 +7,17 @@ import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SyncResult;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.model.MensageriaContract;
+import com.tcc.mensageria.network.ConexaoRest;
 import com.tcc.mensageria.view.activity.MainActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Vector;
 
 /**
  * classe para lidar com as conexoes com o servidor utilizando um sync adapter
@@ -80,204 +62,9 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
         Log.d(TAG, "onPerformSync: ");
-        getJSON();
-    }
-
-    /**
-     * metodo para pegar os dados json do servidor
-     */
-    public void getJSON() {
-        HttpURLConnection conexao = null;
-        BufferedReader leitor = null;
-        String JsonString = null;
-
-        try {
-            String URL_BASE = "http://";
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-            String endereco = sharedPref.getString(getContext().getString(R.string.pref_endereco_key)
-                    , getContext().getString(R.string.endereco_default));
-            URL_BASE += endereco;
-            URL url = new URL(URL_BASE);
-
-            conexao = (HttpURLConnection) url.openConnection();
-            conexao.setRequestMethod("GET");
-            conexao.connect();
-
-            InputStream inputStream = conexao.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-
-            if (inputStream == null) {
-                return;
-            }
-            leitor = new BufferedReader(new InputStreamReader(inputStream));
-
-            String linha;
-            while ((linha = leitor.readLine()) != null) {
-                buffer.append(linha + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                return;
-            }
-
-            JsonString = buffer.toString();
-
-            parseJson(JsonString);
-        } catch (IOException e) {
-            Log.e(TAG, "Erro ", e);
-        } finally {
-            if (conexao != null) {
-                conexao.disconnect();
-            }
-            if (leitor != null) {
-                try {
-                    leitor.close();
-                } catch (final IOException e) {
-                    Log.e(TAG, "Erro ao fechar", e);
-                }
-            }
-        }
-
-    }
-
-    /**
-     * Metodo para formatar a string json recebida
-     *
-     * @param JSON string para ser formatada
-     */
-    public void parseJson(String JSON) {
-        Log.d(TAG, "parseJson: ");
-        if (JSON == null) {
-            return;
-        }
-
-
-        Vector<ContentValues> listaMensagens = new Vector<>();
-
-        try {
-            JSONArray jsonArray = new JSONArray(JSON);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject objeto = jsonArray.getJSONObject(i);
-
-                JSONObject autor = objeto.getJSONObject("autor");
-                long idAutor = autor.getLong("id");
-                String nomeAutor = autor.getString("nome");
-                String email = autor.getString("email");
-
-                ContentValues valores = new ContentValues();
-                valores.put(MensageriaContract.Autores._ID, idAutor);
-                valores.put(MensageriaContract.Autores.COLUNA_NOME, nomeAutor);
-                valores.put(MensageriaContract.Autores.COLUNA_EMAIL, email);
-
-                idAutor = addAutor(valores);
-                valores.clear();
-
-                JSONObject conversa = objeto.getJSONObject("chat");
-                long idConversa = conversa.getLong("id");
-                String nomeConversa = conversa.getString("nome");
-                boolean interativa = conversa.getBoolean("interativa");
-
-                valores.put(MensageriaContract.Conversas._ID, idConversa);
-                valores.put(MensageriaContract.Conversas.COLUNA_TITULO, nomeConversa);
-                valores.put(MensageriaContract.Conversas.COLUNA_INTERATIVA, interativa);
-
-                idConversa = addConversa(valores);
-                valores.clear();
-
-                long idMensagem = objeto.getLong("id");
-                String conteudo = objeto.getString("conteudo");
-                long dataEnvio = objeto.getLong("dataEnvio");
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(MensageriaContract.Mensagens._ID, idMensagem);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, conteudo);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, dataEnvio);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_AUTOR, idAutor);
-                contentValues.put(MensageriaContract.Mensagens.COLUNA_FK_CONVERSA, idConversa);
-                listaMensagens.add(contentValues);
-            }
-            addMensagem(listaMensagens);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Metodo para adicionar autores via content provider
-     *
-     * @param valores dados para inserir na tabela
-     * @return o id do autor inserido
-     */
-    private long addAutor(ContentValues valores) {
-        long id;
-        Cursor cursor = getContext().getContentResolver().query(
-                MensageriaContract.Autores.CONTENT_URI,
-                new String[]{MensageriaContract.Autores._ID},
-                MensageriaContract.Autores.COLUNA_EMAIL + " = ?",
-                new String[]{valores.getAsString(MensageriaContract.Autores.COLUNA_EMAIL)},
-                null);
-
-        if (cursor.moveToFirst()) {
-            int index = cursor.getColumnIndex(MensageriaContract.Autores._ID);
-            id = cursor.getLong(index);
-        } else {
-            Uri uriInsercao = getContext().getContentResolver().insert(
-                    MensageriaContract.Autores.CONTENT_URI,
-                    valores
-            );
-
-            id = ContentUris.parseId(uriInsercao);
-        }
-        return id;
-    }
-
-
-    /**
-     * Metodo para adicionar conversas via content provider
-     *
-     * @param valores dados para inserir na tabela
-     * @return o id da conversa inserida
-     */
-
-    private long addConversa(ContentValues valores) {
-        long id;
-        Cursor cursor = getContext().getContentResolver().query(
-                MensageriaContract.Conversas.CONTENT_URI,
-                new String[]{MensageriaContract.Conversas._ID},
-                MensageriaContract.Conversas._ID + " = ?",
-                new String[]{valores.getAsString(MensageriaContract.Conversas._ID)},
-                null);
-
-        if (cursor.moveToFirst()) {
-            int index = cursor.getColumnIndex(MensageriaContract.Conversas._ID);
-            id = cursor.getLong(index);
-        } else {
-            Uri uriInsercao = getContext().getContentResolver().insert(
-                    MensageriaContract.Conversas.CONTENT_URI,
-                    valores
-            );
-            id = ContentUris.parseId(uriInsercao);
-        }
-        return id;
-    }
-
-    /**
-     * Metodo para adicionar mensagens via content provider
-     *
-     * @param listaMensagens lista de mensagens para serem adicionadas no banco
-     */
-    private void addMensagem(Vector<ContentValues> listaMensagens) {
-        if (listaMensagens.size() > 0) {
-            ContentValues[] cvArray = new ContentValues[listaMensagens.size()];
-            listaMensagens.toArray(cvArray);
-            int qtdMensagens = getContext().getContentResolver().bulkInsert(MensageriaContract.Mensagens.CONTENT_URI,
-                    cvArray);
-            if (qtdMensagens > 0) {
-                notificar();
-            }
-        }
+        ConexaoRest conexaoRest  = new ConexaoRest();
+        String JsonMensagens = conexaoRest.getJSON(getContext());
+        conexaoRest.AddNoBanco(JsonMensagens,getContext());
     }
 
     /**

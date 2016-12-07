@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Mensageria</string>
-    <string name="action_settings">Preferencias</string>
-    <string name="action_refresh">Atualizar</string>
+    <string name="action_preferencias">Preferencias</string>
+    <string name="action_atualizar">Atualizar</string>
+    <string name="action_sair">Sair</string>
     <string name="title_activity_preferencias">Preferencias</string>
 
     <string name="view_vazia">Conexão com o servidor indisponivel</string>
@@ -10,9 +11,15 @@
 
     <!-- strings relacionadas a configurações-->
     <string name="pref_endereco_key">Endereco</string>
-    <string name="endereco_default">mensageria-ws.herokuapp.com/mensagens</string>
+    <string name="endereco_default">mensageria-ws.herokuapp.com</string>
 
     <!-- MensageriaSyncAdapter -->
     <string name="sync_account_type">mensageria.tcc.com</string>
     <string name="content_authority">com.tcc.mensageria</string>
+
+    <string name="login_obrigatorio">Por favor, realize o login</string>
+
+    <!-- chat -->
+    <string name="action_enviar">Enviar</string>
+    <string name="prompt_mensagem">Mensagem</string>
 </resources>
