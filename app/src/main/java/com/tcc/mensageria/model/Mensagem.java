@@ -9,21 +9,21 @@ public class Mensagem {
 
     private Autor autor;
 
-    private Conversa conversa;
+    private Conversa chat;
 
     public Mensagem(Long id, String conteudo, long dataEnvio, Autor autor, Conversa chat) {
         this.id = id;
         this.conteudo = conteudo;
         this.dataEnvio = dataEnvio;
         this.autor = autor;
-        this.conversa = chat;
+        this.chat = chat;
     }
 
     public Mensagem(String conteudo, long dataEnvio, Autor autor, Conversa conversa) {
         this.conteudo = conteudo;
         this.dataEnvio = dataEnvio;
         this.autor = autor;
-        this.conversa = conversa;
+        this.chat = conversa;
     }
 
     public void setId(Long id) {
@@ -55,17 +55,26 @@ public class Mensagem {
         this.autor = autor;
     }
 
-    public Conversa getConversa() {
-        return conversa;
+    public Conversa getChat() {
+        return chat;
     }
 
-    public void setConversa(Conversa conversa) {
-        this.conversa = conversa;
+    public void setChat(Conversa chat) {
+        this.chat = chat;
     }
 
     public Long getId() {
         return id;
     }
 
-
+    @Override
+    public String toString() {
+        return "Mensagem{" +
+                "id=" + id +
+                ", conteudo='" + conteudo + '\'' +
+                ", dataEnvio=" + dataEnvio +
+                ", autor=" + autor.toString() +
+                ", chat=" + chat.toString() +
+                '}';
+    }
 }

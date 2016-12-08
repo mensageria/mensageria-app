@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.util.HashSet;
 import java.util.Vector;
 
 import static android.content.ContentUris.parseId;
@@ -20,7 +19,6 @@ public class BDUtil {
     }
 
     public long addAutor(Autor autor) {
-        long id;
         Cursor cursor = mContext.getContentResolver().query(
                 MensageriaContract.Autores.CONTENT_URI,
                 new String[]{MensageriaContract.Autores._ID},
@@ -29,8 +27,8 @@ public class BDUtil {
                 null);
 
         if (cursor.moveToFirst()) {
-            int index = cursor.getColumnIndex(MensageriaContract.Autores._ID);
-            id = cursor.getLong(index);
+            cursor.close();
+            return autor.getId();
         } else {
             ContentValues dadosAutor = new ContentValues();
             dadosAutor.put(MensageriaContract.Autores._ID, autor.getId());
@@ -43,59 +41,53 @@ public class BDUtil {
                     MensageriaContract.Autores.CONTENT_URI,
                     dadosAutor
             );
-
-            id = parseId(uriInsercao);
+            cursor.close();
+            return parseId(uriInsercao);
         }
-        cursor.close();
-        return id;
     }
 
 
     public long addConversa(Conversa conversa) {
-
-        ContentValues dadosConversa = new ContentValues();
-        dadosConversa.put(MensageriaContract.Conversas._ID, conversa.getId());
-        dadosConversa.put(MensageriaContract.Conversas.COLUNA_TITULO, conversa.getTitulo());
-        dadosConversa.put(MensageriaContract.Conversas.COLUNA_DATA_CRIACAO, conversa.getDataCriacao());
-        dadosConversa.put(MensageriaContract.Conversas.COLUNA_INTERATIVA, conversa.isInterativa() ? 1 : 0);
-
-
-        Uri uriInsercao = mContext.getContentResolver().insert(
+        Cursor cursor = mContext.getContentResolver().query(
                 MensageriaContract.Conversas.CONTENT_URI,
-                dadosConversa
-        );
-        return ContentUris.parseId(uriInsercao);
+                new String[]{MensageriaContract.Conversas._ID},
+                MensageriaContract.Conversas._ID + " = ?",
+                new String[]{String.valueOf(conversa.getId())},
+                null);
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            return conversa.getId();
+        } else {
+            ContentValues dadosConversa = new ContentValues();
+            dadosConversa.put(MensageriaContract.Conversas._ID, conversa.getId());
+            dadosConversa.put(MensageriaContract.Conversas.COLUNA_TITULO, conversa.getNome());
+            dadosConversa.put(MensageriaContract.Conversas.COLUNA_DATA_CRIACAO, conversa.getDataCriacao());
+            dadosConversa.put(MensageriaContract.Conversas.COLUNA_INTERATIVA, conversa.isInterativa() ? 1 : 0);
+
+            Uri uriInsercao = mContext.getContentResolver().insert(
+                    MensageriaContract.Conversas.CONTENT_URI,
+                    dadosConversa
+            );
+            cursor.close();
+            return ContentUris.parseId(uriInsercao);
+        }
     }
 
-    public long addMensagem(Mensagem mensagem) {
-
-        addAutor(mensagem.getAutor());
-        addConversa(mensagem.getConversa());
-        ContentValues dadosMensagem = new ContentValues();
-        dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, mensagem.getConteudo());
-        dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, mensagem.getDataEnvio());
-        dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_FK_AUTOR, mensagem.getAutor().getId());
-        dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_FK_CONVERSA, mensagem.getConversa().getId());
-
-        Uri uriInsercao = mContext.getContentResolver().insert(
-                MensageriaContract.Conversas.CONTENT_URI,
-                dadosMensagem
-        );
-        return parseId(uriInsercao);
-    }
-
-    public int addListaMensagem(HashSet<Mensagem> mensagens) {
+    public int addListaMensagem(Mensagem[] arrayMensagens) {
         Vector<ContentValues> listaMensagens = new Vector<>();
 
-        for (Mensagem mensagem : mensagens) {
+        for (Mensagem mensagem : arrayMensagens) {
             addAutor(mensagem.getAutor());
-            addConversa(mensagem.getConversa());
+            addConversa(mensagem.getChat());
 
             ContentValues dadosMensagem = new ContentValues();
+
+            dadosMensagem.put(MensageriaContract.Mensagens._ID, mensagem.getId());
             dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_CONTEUDO, mensagem.getConteudo());
             dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, mensagem.getDataEnvio());
             dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_FK_AUTOR, mensagem.getAutor().getId());
-            dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_FK_CONVERSA, mensagem.getConversa().getId());
+            dadosMensagem.put(MensageriaContract.Mensagens.COLUNA_FK_CONVERSA, mensagem.getChat().getId());
             listaMensagens.add(dadosMensagem);
         }
 

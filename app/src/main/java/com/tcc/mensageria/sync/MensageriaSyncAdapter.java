@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.tcc.mensageria.R;
 import com.tcc.mensageria.network.ConexaoRest;
+import com.tcc.mensageria.utils.Utility;
 import com.tcc.mensageria.view.activity.MainActivity;
 
 /**
@@ -64,7 +65,7 @@ public class MensageriaSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "onPerformSync: ");
         ConexaoRest conexaoRest  = new ConexaoRest();
         String JsonMensagens = conexaoRest.getJSON(getContext());
-        conexaoRest.AddNoBanco(JsonMensagens,getContext());
+        Utility.addJSONNoBanco(JsonMensagens,getContext());
     }
 
     /**

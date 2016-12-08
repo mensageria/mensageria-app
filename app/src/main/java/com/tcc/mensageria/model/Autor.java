@@ -54,4 +54,14 @@ public class Autor {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "Autor{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", nome='" + nome + '\'' +
+                ", emailConfirmado=" + emailConfirmado +
+                ", ultimoAcesso=" + ultimoAcesso +
+                '}';
+    }
 }

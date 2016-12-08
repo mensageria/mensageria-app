@@ -2,7 +2,10 @@ package com.tcc.mensageria.utils;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tcc.mensageria.R;
+import com.tcc.mensageria.model.BDUtil;
+import com.tcc.mensageria.model.Mensagem;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,6 +39,17 @@ public class Utility {
             mensagem = new SimpleDateFormat("dd/MM/yyyy",locale).format(data.getTime());
         }
         return mensagem;
+    }
+
+
+    public static void addJSONNoBanco(String JSON, Context context) {
+        if (JSON == null) {
+            return;
+        }
+        BDUtil bdUtil = new BDUtil(context);
+        Gson gson = new Gson();
+        Mensagem[] arrayMensagens = gson.fromJson(JSON,Mensagem[].class);
+        bdUtil.addListaMensagem(arrayMensagens);
     }
 
 }

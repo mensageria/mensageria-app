@@ -6,7 +6,7 @@ public class Conversa {
     private Long id;
 
     private boolean interativa;
-    private String titulo;
+    private String nome;
     private long dataCriacao;
 
     public Conversa() {
@@ -15,7 +15,7 @@ public class Conversa {
     public Conversa(Long id, boolean interativa, String titulo, int dataCriacao) {
         this.id = id;
         this.interativa = interativa;
-        this.titulo = titulo;
+        this.nome = titulo;
         this.dataCriacao = dataCriacao;
     }
 
@@ -39,12 +39,12 @@ public class Conversa {
         this.interativa = interativa;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public String getNome() {
+        return nome;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
 
@@ -52,5 +52,13 @@ public class Conversa {
         return id;
     }
 
-
+    @Override
+    public String toString() {
+        return "Conversa{" +
+                "id=" + id +
+                ", interativa=" + interativa +
+                ", nome='" + nome + '\'' +
+                ", dataCriacao=" + dataCriacao +
+                '}';
+    }
 }

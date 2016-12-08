@@ -10,10 +10,8 @@ import com.tcc.mensageria.model.Autor;
 import com.tcc.mensageria.model.BDUtil;
 import com.tcc.mensageria.model.Conversa;
 import com.tcc.mensageria.model.Mensagem;
+import com.tcc.mensageria.utils.Utility;
 import com.tcc.mensageria.view.MensageriaApplication;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Calendar;
 
@@ -30,7 +28,7 @@ public class SocketConversa {
     private int mIdConversa;
 
 
-    public SocketConversa(Activity activity,int idConversa) {
+    public SocketConversa(Activity activity, int idConversa) {
         this.mActivity = activity;
         this.mIdConversa = idConversa;
         mUsername = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -38,8 +36,8 @@ public class SocketConversa {
 
     public void conectar(MensageriaApplication app) {
         mSocket = app.getSocket();
-        mSocket.off(Socket.EVENT_CONNECT, onConnect);
-        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on("new message", onNewMessage);
 
         mSocket.connect();
@@ -48,6 +46,8 @@ public class SocketConversa {
 
     public void desconectar() {
         mSocket.disconnect();
+        mSocket.off(Socket.EVENT_CONNECT, onConnect);
+        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off("new message", onNewMessage);
     }
 
@@ -63,8 +63,8 @@ public class SocketConversa {
         BDUtil bdUtil = new BDUtil(mActivity);
         Autor autor = bdUtil.findAutor(idAutor);
         Conversa conversa = bdUtil.findConversa(mIdConversa);
-        Mensagem mensagem = new Mensagem(conteudoMensagem, Calendar.getInstance().getTimeInMillis(),autor,conversa);
-        bdUtil.addMensagem(mensagem);
+        Mensagem mensagem = new Mensagem(conteudoMensagem, Calendar.getInstance().getTimeInMillis(), autor, conversa);
+        bdUtil.addListaMensagem(new Mensagem[]{mensagem});
 
         // perform the sending message attempt.
         mSocket.emit("new message", conteudoMensagem);
@@ -77,16 +77,8 @@ public class SocketConversa {
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    String message;
-                    try {
-                        username = data.getString("username");
-                        message = data.getString("message");
-                    } catch (JSONException e) {
-                        return;
-                    }
-                    //addMensagem(message,username);
+                    String data = (String) args[0];
+                    Utility.addJSONNoBanco(data, mActivity);
                 }
             });
         }
@@ -95,7 +87,7 @@ public class SocketConversa {
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-           mActivity.runOnUiThread(new Runnable() {
+            mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     if (!isConnected) {

@@ -5,10 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.tcc.mensageria.R;
-import com.tcc.mensageria.model.BDUtil;
-import com.tcc.mensageria.model.Mensagem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,8 +13,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class ConexaoRest {
     private final String TAG = ConexaoRest.class.getSimpleName();
@@ -76,16 +71,4 @@ public class ConexaoRest {
         }
         return JsonString;
     }
-
-    public void AddNoBanco(String JSON, Context context) {
-        if (JSON == null) {
-            return;
-        }
-        BDUtil bdUtil = new BDUtil(context);
-        Gson gson = new Gson();
-        Mensagem[] arrayMensagens = gson.fromJson(JSON,Mensagem[].class);
-        HashSet<Mensagem> listaMensagens = new HashSet<>(Arrays.asList(arrayMensagens));
-        bdUtil.addListaMensagem(listaMensagens);
-    }
-
 }
