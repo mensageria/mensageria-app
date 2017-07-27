@@ -1,0 +1,165 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "51ddd145ae707d35edd348c3a0919299",
+    "entities": [
+      {
+        "tableName": "Autor",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `email` TEXT, `nome` TEXT, `ultimo_acesso` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ultimoAcesso",
+            "columnName": "ultimo_acesso",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Mensagem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `conteudo` TEXT, `dataEnvio` INTEGER, `recebida` INTEGER, `enviada` INTEGER, `fk_autor` INTEGER, `fk_conversa` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`fk_autor`) REFERENCES `Autor`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`fk_conversa`) REFERENCES `Conversa`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "conteudo",
+            "columnName": "conteudo",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dataEnvio",
+            "columnName": "dataEnvio",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "recebida",
+            "columnName": "recebida",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "enviada",
+            "columnName": "enviada",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "autorId",
+            "columnName": "fk_autor",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "conversaId",
+            "columnName": "fk_conversa",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Mensagem_fk_autor",
+            "unique": false,
+            "columnNames": [
+              "fk_autor"
+            ],
+            "createSql": "CREATE  INDEX `index_Mensagem_fk_autor`\nON `${TABLE_NAME}` (`fk_autor`)"
+          },
+          {
+            "name": "index_Mensagem_fk_conversa",
+            "unique": false,
+            "columnNames": [
+              "fk_conversa"
+            ],
+            "createSql": "CREATE  INDEX `index_Mensagem_fk_conversa`\nON `${TABLE_NAME}` (`fk_conversa`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Autor",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fk_autor"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Conversa",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fk_conversa"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Conversa",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `interativa` INTEGER, `nome` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "interativa",
+            "columnName": "interativa",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "nome",
+            "columnName": "nome",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"51ddd145ae707d35edd348c3a0919299\")"
+    ]
+  }
+}
