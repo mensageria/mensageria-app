@@ -17,7 +17,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import com.tcc.mensageria.R
-import com.tcc.mensageria.model.MensageriaContract
 import com.tcc.mensageria.view.adapter.ListaConversaAdapter
 import com.tcc.mensageria.view.adapter.MensagensAdapter
 
@@ -106,28 +105,29 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, Loa
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-        val COLUNAS = arrayOf(MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID, MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, MensageriaContract.Mensagens.COLUNA_CONTEUDO, MensageriaContract.Autores.COLUNA_NOME, MensageriaContract.Conversas.COLUNA_TITULO)
-
-        //conversas._id = mensagens.fk_conversa and conversas._id = x and mensagens.fk_autor = autores._id group by mensagens._id
-        val selection = MensageriaContract.Conversas.NOME_TABELA + "." +
-                MensageriaContract.Conversas._ID +
-                " = " + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
-
-                " AND " + MensageriaContract.Conversas.NOME_TABELA + "." +
-                MensageriaContract.Conversas._ID + " = " + mIdConversa +
-
-                " AND " + MensageriaContract.Mensagens.COLUNA_FK_AUTOR + " = " +
-                MensageriaContract.Autores.NOME_TABELA + "." + MensageriaContract.Autores._ID +
-                ") GROUP BY (" + MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID
-
-        val orderBy = MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " ASC"
-
-        return CursorLoader(activity,
-                MensageriaContract.Conversas.buildConversacomAutorEMensagem(),
-                COLUNAS,
-                selection, null,
-                orderBy
-        )
+//        val COLUNAS = arrayOf(MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID, MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, MensageriaContract.Mensagens.COLUNA_CONTEUDO, MensageriaContract.Autores.COLUNA_NOME, MensageriaContract.Conversas.COLUNA_TITULO)
+//
+//        //conversas._id = mensagens.fk_conversa and conversas._id = x and mensagens.fk_autor = autores._id group by mensagens._id
+//        val selection = MensageriaContract.Conversas.NOME_TABELA + "." +
+//                MensageriaContract.Conversas._ID +
+//                " = " + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
+//
+//                " AND " + MensageriaContract.Conversas.NOME_TABELA + "." +
+//                MensageriaContract.Conversas._ID + " = " + mIdConversa +
+//
+//                " AND " + MensageriaContract.Mensagens.COLUNA_FK_AUTOR + " = " +
+//                MensageriaContract.Autores.NOME_TABELA + "." + MensageriaContract.Autores._ID +
+//                ") GROUP BY (" + MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID
+//
+//        val orderBy = MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " ASC"
+//
+//        return CursorLoader(activity,
+//                MensageriaContract.Conversas.buildConversacomAutorEMensagem(),
+//                COLUNAS,
+//                selection, null,
+//                orderBy
+//        )
+        return CursorLoader(null, null, null, null, null, null)
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {

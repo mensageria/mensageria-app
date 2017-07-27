@@ -9,10 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.tcc.mensageria.R
-import com.tcc.mensageria.model.MensageriaContract
-import com.tcc.mensageria.utils.Utility
 
 /**
  * Adapter do recycler view de conversas
@@ -52,16 +49,16 @@ open class ListaConversaAdapter(cursor: Cursor?, var mContext: Context) : Recycl
             return
         }
 
-        val indexConteudo = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)
-        val indexData = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO)
-        val indexNomeAutor = cursor!!.getColumnIndex(MensageriaContract.Autores.COLUNA_NOME)
-        val indexTitulo = cursor!!.getColumnIndex(MensageriaContract.Conversas.COLUNA_TITULO)
+//        val indexConteudo = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)
+//        val indexData = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO)
+//        val indexNomeAutor = cursor!!.getColumnIndex(MensageriaContract.Autores.COLUNA_NOME)
+//        val indexTitulo = cursor!!.getColumnIndex(MensageriaContract.Conversas.COLUNA_TITULO)
 
-        cursor!!.moveToPosition(posicao)
-        holder.conteudo.text = cursor!!.getString(indexConteudo)
-        holder.nomeAutor.text = cursor!!.getString(indexNomeAutor)
-        holder.titulo?.text = cursor!!.getString(indexTitulo)
-        holder.data.text = Utility.getDataFormatada(cursor!!.getLong(indexData), mContext)
+//        cursor!!.moveToPosition(posicao)
+//        holder.conteudo.text = cursor!!.getString(indexConteudo)
+//        holder.nomeAutor.text = cursor!!.getString(indexNomeAutor)
+//        holder.titulo?.text = cursor!!.getString(indexTitulo)
+//        holder.data.text = Utility.getDataFormatada(cursor!!.getLong(indexData), mContext)
     }
 
     override fun getItemCount(): Int {

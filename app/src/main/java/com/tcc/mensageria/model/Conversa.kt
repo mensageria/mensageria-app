@@ -1,6 +1,13 @@
 package com.tcc.mensageria.model
 
-data class Conversa(var id: Long?,
-                    var isInterativa: Boolean,
-                    var nome: String,
-                    val dataCriacao: Long)
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+
+@Entity
+data class Conversa(
+        @PrimaryKey
+        var id: Long? = null,
+        var interativa: Boolean? = null,
+        var nome: String? = null
+) {
+}

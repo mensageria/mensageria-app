@@ -5,8 +5,6 @@ import android.database.Cursor
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tcc.mensageria.R
-import com.tcc.mensageria.model.MensageriaContract
-import com.tcc.mensageria.utils.Utility
 
 /**
  * Adapter do recycler view de mensagens
@@ -23,14 +21,14 @@ class MensagensAdapter(cursor: Cursor?, context: Context) : ListaConversaAdapter
             return
         }
 
-        val indexConteudo = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)
-        val indexData = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO)
-        val indexNomeAutor = cursor!!.getColumnIndex(MensageriaContract.Autores.COLUNA_NOME)
-
-        cursor!!.moveToPosition(posicao)
-        holder.conteudo.text = cursor!!.getString(indexConteudo)
-        holder.nomeAutor.text = cursor!!.getString(indexNomeAutor)
-        holder.data.text = Utility.getDataFormatada(cursor!!.getLong(indexData), mContext)
+//        val indexConteudo = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)
+//        val indexData = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO)
+//        val indexNomeAutor = cursor!!.getColumnIndex(MensageriaContract.Autores.COLUNA_NOME)
+//
+//        cursor!!.moveToPosition(posicao)
+//        holder.conteudo.text = cursor!!.getString(indexConteudo)
+//        holder.nomeAutor.text = cursor!!.getString(indexNomeAutor)
+//        holder.data.text = Utility.getDataFormatada(cursor!!.getLong(indexData), mContext)
     }
 
 }

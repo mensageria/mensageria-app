@@ -1,11 +1,7 @@
 package com.tcc.mensageria.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
-import com.google.gson.Gson
 import com.tcc.mensageria.R
-import com.tcc.mensageria.model.BDUtil
-import com.tcc.mensageria.model.Mensagem
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -15,7 +11,6 @@ import java.util.concurrent.TimeUnit
  */
 object Utility {
 
-    @SuppressLint("WrongConstant")
     fun getDataFormatada(dataMs: Long, context: Context): String {
         val mensagem: String
         val data = Calendar.getInstance()
@@ -37,17 +32,6 @@ object Utility {
             mensagem = SimpleDateFormat("dd/MM/yyyy", locale).format(data.time)
         }
         return mensagem
-    }
-
-
-    fun addJSONNoBanco(JSON: String?, context: Context) {
-        if (JSON == null) {
-            return
-        }
-        val bdUtil = BDUtil(context)
-        val gson = Gson()
-        val arrayMensagens = gson.fromJson(JSON, Array<Mensagem>::class.java)
-        bdUtil.addListaMensagem(arrayMensagens)
     }
 
 }

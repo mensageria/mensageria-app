@@ -11,7 +11,6 @@ import android.support.v4.app.TaskStackBuilder
 import android.util.Log
 import com.tcc.mensageria.R
 import com.tcc.mensageria.network.ConexaoRest
-import com.tcc.mensageria.utils.Utility
 import com.tcc.mensageria.view.activity.MainActivity
 
 /**
@@ -56,7 +55,7 @@ class MensageriaSyncAdapter : AbstractThreadedSyncAdapter {
         Log.d(TAG, "onPerformSync: ")
         val conexaoRest = ConexaoRest()
         val JsonMensagens = conexaoRest.getJSON(context)
-        Utility.addJSONNoBanco(JsonMensagens, context)
+//        Utility.addJSONNoBanco(JsonMensagens, context)
     }
 
     /**
