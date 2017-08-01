@@ -16,7 +16,7 @@ class MensageriaAuthenticatorService : Service() {
     }
 
     /*
-     * When the system binds to this Service to make the RPC call
+     * When the system binds to this GenericService to make the RPC call
      * return the authenticator's IBinder.
      */
     override fun onBind(intent: Intent): IBinder? {

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.IBinder
 
 /**
- * Define a Service that returns an IBinder for the
+ * Define a GenericService that returns an IBinder for the
  * sync adapter class, allowing the sync adapter framework to call
  * onPerformSync().
  */

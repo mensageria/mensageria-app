@@ -10,7 +10,6 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.TaskStackBuilder
 import android.util.Log
 import com.tcc.mensageria.R
-import com.tcc.mensageria.network.ConexaoRest
 import com.tcc.mensageria.view.activity.MainActivity
 
 /**
@@ -53,8 +52,8 @@ class MensageriaSyncAdapter : AbstractThreadedSyncAdapter {
     override fun onPerformSync(account: Account, extras: Bundle, authority: String,
                                provider: ContentProviderClient, syncResult: SyncResult) {
         Log.d(TAG, "onPerformSync: ")
-        val conexaoRest = ConexaoRest()
-        val JsonMensagens = conexaoRest.getJSON(context)
+//        val conexaoRest = RestRepository()
+//        val JsonMensagens = conexaoRest.getJSON(context)
 //        Utility.addJSONNoBanco(JsonMensagens, context)
     }
 
