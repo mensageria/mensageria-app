@@ -16,8 +16,8 @@ data class Mensagem(
         var id: Long? = null,
         var conteudo: String? = null,
         var dataEnvio: Date? = null,
-        var recebida: Boolean? = null,
-        var enviada: Boolean? = null,
+        var recebida: Boolean? = false,
+        var enviada: Boolean? = false,
         @ColumnInfo(name = "fk_autor")
         var autorId: Int? = null,
         @ColumnInfo(name = "fk_conversa")
