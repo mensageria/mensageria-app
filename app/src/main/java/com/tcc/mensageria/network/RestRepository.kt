@@ -9,10 +9,8 @@ import retrofit2.Response
 import javax.inject.Inject
 
 
-class RestRepository(val context: Context) {
-
-    @Inject
-    lateinit var mensagensService: MensagensService
+class RestRepository public @Inject constructor(
+        private val context: Context, private val mensagensService: MensagensService) {
 
     fun getMensagens(sucesso: (dados: List<MensagemPOJO>) -> Unit,
                      falha: (t: Throwable) -> Unit) {

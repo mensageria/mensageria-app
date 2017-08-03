@@ -9,7 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
-class RetrofitModule(val context: Context) {
+class RetrofitModule(private val context: Context) {
 
     //TODO trocar quando remover a configuração de url manual
     @Provides fun provideRetrofit(): Retrofit {
@@ -21,6 +21,10 @@ class RetrofitModule(val context: Context) {
                 .baseUrl("http://" + context.getString(R.string.endereco_default))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
+    }
+
+    @Provides fun provideContext(): Context {
+        return context
     }
 
     @Provides fun provideMensagemService(retrofit: Retrofit): MensagensService {
