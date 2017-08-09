@@ -5,10 +5,10 @@ import android.arch.lifecycle.Observer
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.tcc.mensageria.model.AppDatabase
-import com.tcc.mensageria.model.dao.AutorDao
-import com.tcc.mensageria.model.dao.ConversaDao
-import com.tcc.mensageria.model.dao.MensagemDao
+import com.tcc.mensageria.model.database.AppDatabase
+import com.tcc.mensageria.model.database.AutorDao
+import com.tcc.mensageria.model.database.ConversaDao
+import com.tcc.mensageria.model.database.MensagemDao
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -18,15 +18,13 @@ import java.io.IOException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-@RunWith(AndroidJUnit4::class)
-class DbTests {
+@RunWith(AndroidJUnit4::class) class DbTests {
     private lateinit var mAutorDao: AutorDao
     private lateinit var mConversaDao: ConversaDao
     private lateinit var mMensagemDao: MensagemDao
     private lateinit var mDb: AppDatabase
 
-    @Before
-    fun createDb() {
+    @Before fun createDb() {
         val context = InstrumentationRegistry.getTargetContext()
         mDb = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         mAutorDao = mDb.getAutorDao()
@@ -34,14 +32,11 @@ class DbTests {
         mMensagemDao = mDb.getMensagemDao()
     }
 
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
+    @After @Throws(IOException::class) fun closeDb() {
         mDb.close()
     }
 
-    @Test
-    fun testLeituraEescritaAutor() {
+    @Test fun testLeituraEescritaAutor() {
         val valor = TestUtils.criarAutor(1)
         var valores = mAutorDao.inserir(valor)
         Assert.assertTrue("nenhum valor inserido no banco", valores.isNotEmpty())
@@ -51,8 +46,7 @@ class DbTests {
         Assert.assertEquals("valor diferente no banco", valor, valorBanco)
     }
 
-    @Test
-    fun testLeituraEescritaConversa() {
+    @Test fun testLeituraEescritaConversa() {
         val valor = TestUtils.criarConversa(1)
         var valores = mConversaDao.inserir(valor)
         Assert.assertTrue("nenhum valor inserido no banco", valores.isNotEmpty())
@@ -62,8 +56,7 @@ class DbTests {
         Assert.assertEquals("valor diferente no banco", valor, valorBanco)
     }
 
-    @Test
-    fun testLeituraEescritaMensagem() {
+    @Test fun testLeituraEescritaMensagem() {
         mAutorDao.inserir(TestUtils.criarAutor(1))
         mConversaDao.inserir(TestUtils.criarConversa(1))
 
@@ -76,17 +69,16 @@ class DbTests {
         Assert.assertEquals("valor diferente no banco", valor, valorBanco)
     }
 
-}
-
-fun <T> LiveData<T>.blockingObserve(): T? {
-    var value: T? = null
-    val latch = CountDownLatch(1)
-    val innerObserver = Observer<T> {
-        value = it
-        latch.countDown()
+    fun <T> LiveData<T>.blockingObserve(): T? {
+        var value: T? = null
+        val latch = CountDownLatch(1)
+        val innerObserver = Observer<T> {
+            value = it
+            latch.countDown()
+        }
+        observeForever(innerObserver)
+        latch.await(2, TimeUnit.SECONDS)
+        return value
     }
-    observeForever(innerObserver)
-    latch.await(2, TimeUnit.SECONDS)
-    return value
 }
 

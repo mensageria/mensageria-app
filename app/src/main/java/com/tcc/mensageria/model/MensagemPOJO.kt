@@ -5,10 +5,13 @@ import java.util.*
 
 data class MensagemPOJO(
         var id: Long? = null,
-        var conteudo: String? = null,
-        var dataEnvio: Date? = null,
-        var chat: Conversa,
-        var autor: Autor
+        var conteudo: String,
+        var dataEnvio: Date,
+        var autor: Autor,
+        var chat: Conversa
 ) {
 
+    fun getMensagem(): Mensagem {
+        return Mensagem(id, conteudo, dataEnvio, autorId = autor.id, conversaId = chat.id)
+    }
 }

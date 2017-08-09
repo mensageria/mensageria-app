@@ -7,11 +7,13 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @Module
 class RetrofitModule(private val context: Context) {
 
     //TODO trocar quando remover a configuração de url manual
+    @Singleton
     @Provides fun provideRetrofit(): Retrofit {
         val gson = GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -21,10 +23,6 @@ class RetrofitModule(private val context: Context) {
                 .baseUrl("http://" + context.getString(R.string.endereco_default))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-    }
-
-    @Provides fun provideContext(): Context {
-        return context
     }
 
     @Provides fun provideMensagemService(retrofit: Retrofit): MensagensService {

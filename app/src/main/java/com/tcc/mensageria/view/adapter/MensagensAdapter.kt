@@ -9,17 +9,17 @@ import com.tcc.mensageria.R
 /**
  * Adapter do recycler view de mensagens
  */
-class MensagensAdapter(cursor: Cursor?, context: Context) : ListaConversaAdapter(cursor, context) {
+class MensagensAdapter(cursor: Cursor?, context: Context) : ListaConversaAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListaConversaAdapter.ListaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lista_mensagens, parent, false)
         return super.ListaViewHolder(view);
     }
 
-    override fun onBindViewHolder(holder: ListaConversaAdapter.ListaViewHolder, posicao: Int) {
-        if (cursor == null) {
-            return
-        }
+    override fun onBindViewHolder(holder: ListaConversaAdapter.ListaViewHolder, position: Int) {
+//        if (cursor == null) {
+//            return
+//        }
 
 //        val indexConteudo = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_CONTEUDO)
 //        val indexData = cursor!!.getColumnIndex(MensageriaContract.Mensagens.COLUNA_DATA_ENVIO)

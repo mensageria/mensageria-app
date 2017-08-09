@@ -84,17 +84,17 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, Loa
 
      * @return false se a lista puder ser populada e true se nao puder
      */
-    private fun listaEstaVazia(): Boolean {
-        if (mAdapter.cursor!!.moveToFirst()) {
-            mRecyclerView.visibility = View.VISIBLE
-            mViewVazia.visibility = View.GONE
-            return false
-        } else {
-            mRecyclerView.visibility = View.GONE
-            mViewVazia.visibility = View.VISIBLE
-            return true
-        }
-    }
+    //    private fun listaEstaVazia(): Boolean {
+//        if (mAdapter.cursor!!.moveToFirst()) {
+//            mRecyclerView.visibility = View.VISIBLE
+//            mViewVazia.visibility = View.GONE
+//            return false
+//        } else {
+//            mRecyclerView.visibility = View.GONE
+//            mViewVazia.visibility = View.VISIBLE
+//            return true
+//        }
+//    }
 
     override fun onItemClick(p: Int) {
 
@@ -131,12 +131,12 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, Loa
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
-        mAdapter.swapCursor(data)
-        listaEstaVazia()
+//        mAdapter.setDados(data)
+//        listaEstaVazia()
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
-        mAdapter.swapCursor(null)
+//        mAdapter.setDados(null)
     }
 
     companion object {

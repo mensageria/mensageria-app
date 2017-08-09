@@ -1,10 +1,9 @@
 package com.tcc.mensageria.view.fragment
 
-import android.app.Fragment
-import android.app.LoaderManager
+import android.arch.lifecycle.LifecycleFragment
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.content.Loader
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -14,6 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tcc.mensageria.R
+import com.tcc.mensageria.model.Conversa
+import com.tcc.mensageria.presenter.ConversasViewModel
+import com.tcc.mensageria.service.DaggerMensageriaComponent
+import com.tcc.mensageria.service.DatabaseModule
+import com.tcc.mensageria.service.RetrofitModule
 import com.tcc.mensageria.sync.MensageriaSyncAdapter
 import com.tcc.mensageria.view.activity.ConversaActivity
 import com.tcc.mensageria.view.adapter.ListaConversaAdapter
@@ -21,25 +25,30 @@ import com.tcc.mensageria.view.adapter.ListaConversaAdapter
 /**
  * Fragmento que contem uma lista de mensagens
  */
-class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
-
-    internal val TAG = this.javaClass.simpleName
-    internal val LOADER_ID = 0
+class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemClickCallback {
 
     lateinit internal var mRecyclerView: RecyclerView
     lateinit internal var mAdapter: ListaConversaAdapter
     lateinit internal var mLayoutManager: RecyclerView.LayoutManager
     lateinit internal var mViewVazia: TextView
+    lateinit internal var mViewModel: ConversasViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        loaderManager.initLoader(LOADER_ID, null, this)
-        super.onActivityCreated(savedInstanceState)
+        mViewModel = ViewModelProviders.of(this).get(ConversasViewModel::class.java)
+
+        val mensageriaComponent = DaggerMensageriaComponent.builder()
+                .retrofitModule(RetrofitModule(activity))
+                .databaseModule(DatabaseModule(activity))
+                .build()
+        mensageriaComponent.inject(mViewModel)
+        mViewModel.conversas?.observe(this, Observer<List<Conversa>> { conversas ->
+            mAdapter.dados = conversas as List<Conversa>
+        });
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -59,7 +68,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
 
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
-        mAdapter = ListaConversaAdapter(null, activity)
+        mAdapter = ListaConversaAdapter()
         mRecyclerView.adapter = mAdapter
         mAdapter.setItemClickCallback(this)
 
@@ -67,8 +76,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
     }
 
     override fun onItemClick(p: Int) {
-        val item = mAdapter.cursor
-        item!!.moveToPosition(p)
+        val item = mAdapter.dados.get(p)
         val i = Intent(activity, ConversaActivity::class.java)
 //        i.putExtra(ConversaFragment.BUNDLE_ID_CONVERSA,
 //                item.getInt(item.getColumnIndex(MensageriaContract.Conversas._ID)))
@@ -84,7 +92,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
      * @return false se a lista puder ser populada e true se nao puder
      */
     private fun listaEstaVazia(): Boolean {
-        if (mAdapter.cursor!!.moveToFirst()) {
+        if (mAdapter.mDataValid) {
             mRecyclerView.visibility = View.VISIBLE
             mViewVazia.visibility = View.GONE
             return false
@@ -93,35 +101,5 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
             mViewVazia.visibility = View.VISIBLE
             return true
         }
-    }
-
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-//        val COLUNAS = arrayOf(MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID, MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, MensageriaContract.Mensagens.COLUNA_CONTEUDO, MensageriaContract.Autores.COLUNA_NOME, MensageriaContract.Conversas.COLUNA_TITULO)
-//
-//        // conversas._id = mensagens.fk_conversa group by fk_conversa
-//        val selection = MensageriaContract.Conversas.NOME_TABELA + "." +
-//                MensageriaContract.Conversas._ID +
-//                " = " + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
-//                ") GROUP BY (" + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA
-//
-//        val orderBy = MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " DESC"
-//
-//        return CursorLoader(activity,
-//                MensageriaContract.Conversas.buildConversacomAutorEMensagem(),
-//                COLUNAS,
-//                selection, null,
-//                orderBy
-//        )
-        return Loader(null)
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
-        mAdapter.swapCursor(data)
-        listaEstaVazia()
-    }
-
-    override fun onLoaderReset(loader: Loader<Cursor>) {
-        mAdapter.swapCursor(null)
     }
 }

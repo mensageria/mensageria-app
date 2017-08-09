@@ -1,4 +1,4 @@
-package com.tcc.mensageria.model
+package com.tcc.mensageria.model.database
 
 import android.arch.persistence.room.TypeConverter
 import java.util.*

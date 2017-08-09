@@ -19,9 +19,9 @@ data class Mensagem(
         var recebida: Boolean? = false,
         var enviada: Boolean? = false,
         @ColumnInfo(name = "fk_autor")
-        var autorId: Int? = null,
+        var autorId: Long? = null,
         @ColumnInfo(name = "fk_conversa")
-        var conversaId: Int? = null
+        var conversaId: Long? = null
 ) {
 
 
