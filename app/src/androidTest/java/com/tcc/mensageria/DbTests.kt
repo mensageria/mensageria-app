@@ -5,10 +5,10 @@ import android.arch.lifecycle.Observer
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.tcc.mensageria.model.database.AppDatabase
-import com.tcc.mensageria.model.database.AutorDao
-import com.tcc.mensageria.model.database.ConversaDao
-import com.tcc.mensageria.model.database.MensagemDao
+import com.tcc.mensageria.database.AppDatabase
+import com.tcc.mensageria.database.AutorDao
+import com.tcc.mensageria.database.ConversaDao
+import com.tcc.mensageria.database.MensagemDao
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

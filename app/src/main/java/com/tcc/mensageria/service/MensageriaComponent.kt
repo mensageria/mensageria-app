@@ -1,7 +1,7 @@
 package com.tcc.mensageria.service
 
 import com.tcc.mensageria.network.RestRepository
-import com.tcc.mensageria.presenter.ConversasViewModel
+import com.tcc.mensageria.presenter.ListaConversasViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -11,5 +11,5 @@ import javax.inject.Singleton
 interface MensageriaComponent {
     fun makeRestRepository(): RestRepository
 
-    fun inject(conversasViewModel: ConversasViewModel): Unit
+    fun inject(conversasViewModel: ListaConversasViewModel): Unit
 }

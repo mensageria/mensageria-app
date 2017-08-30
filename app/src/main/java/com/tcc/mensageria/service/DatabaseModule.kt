@@ -2,10 +2,10 @@ package com.tcc.mensageria.service
 
 import android.arch.persistence.room.Room
 import android.content.Context
-import com.tcc.mensageria.model.database.AppDatabase
-import com.tcc.mensageria.model.database.AutorDao
-import com.tcc.mensageria.model.database.ConversaDao
-import com.tcc.mensageria.model.database.MensagemDao
+import com.tcc.mensageria.database.AppDatabase
+import com.tcc.mensageria.database.AutorDao
+import com.tcc.mensageria.database.ConversaDao
+import com.tcc.mensageria.database.MensagemDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

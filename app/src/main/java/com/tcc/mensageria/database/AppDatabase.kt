@@ -1,4 +1,4 @@
-package com.tcc.mensageria.model.database
+package com.tcc.mensageria.database
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase

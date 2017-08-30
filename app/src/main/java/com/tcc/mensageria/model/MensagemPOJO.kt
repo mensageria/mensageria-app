@@ -4,7 +4,7 @@ import java.util.*
 
 
 data class MensagemPOJO(
-        var id: Long? = null,
+        var id: Long,
         var conteudo: String,
         var dataEnvio: Date,
         var autor: Autor,

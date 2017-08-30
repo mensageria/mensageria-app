@@ -1,4 +1,4 @@
-package com.tcc.mensageria.model.database
+package com.tcc.mensageria.database
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao

@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tcc.mensageria.R
-import com.tcc.mensageria.model.Conversa
-import com.tcc.mensageria.presenter.ConversasViewModel
+import com.tcc.mensageria.model.ConversaDTO
+import com.tcc.mensageria.presenter.ListaConversasViewModel
 import com.tcc.mensageria.service.DaggerMensageriaComponent
 import com.tcc.mensageria.service.DatabaseModule
 import com.tcc.mensageria.service.RetrofitModule
@@ -31,30 +31,33 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
     lateinit internal var mAdapter: ListaConversaAdapter
     lateinit internal var mLayoutManager: RecyclerView.LayoutManager
     lateinit internal var mViewVazia: TextView
-    lateinit internal var mViewModel: ConversasViewModel
+    lateinit internal var mViewModel: ListaConversasViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        mViewModel = ViewModelProviders.of(this).get(ConversasViewModel::class.java)
+        mViewModel = ViewModelProviders.of(this).get(ListaConversasViewModel::class.java)
 
         val mensageriaComponent = DaggerMensageriaComponent.builder()
                 .retrofitModule(RetrofitModule(activity))
                 .databaseModule(DatabaseModule(activity))
                 .build()
         mensageriaComponent.inject(mViewModel)
-        mViewModel.conversas?.observe(this, Observer<List<Conversa>> { conversas ->
-            mAdapter.dados = conversas as List<Conversa>
-        });
-
+        mViewModel.loadConversas()
+        mViewModel.conversas.observe(this, Observer<List<ConversaDTO>> { conversas ->
+            if (conversas != null) {
+                mAdapter.dados = conversas
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val id = item.itemId
         if (id == R.id.action_refresh) {
+            mViewModel.loadConversas()
             MensageriaSyncAdapter.syncImmediately(activity)
         }
         return super.onOptionsItemSelected(item)
@@ -78,8 +81,7 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
     override fun onItemClick(p: Int) {
         val item = mAdapter.dados.get(p)
         val i = Intent(activity, ConversaActivity::class.java)
-//        i.putExtra(ConversaFragment.BUNDLE_ID_CONVERSA,
-//                item.getInt(item.getColumnIndex(MensageriaContract.Conversas._ID)))
+        i.putExtra(ConversaFragment.BUNDLE_ID_CONVERSA, item.id)
         startActivity(i)
     }
 

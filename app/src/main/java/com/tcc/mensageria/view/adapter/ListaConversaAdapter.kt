@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tcc.mensageria.R
-import com.tcc.mensageria.model.Conversa
+import com.tcc.mensageria.model.ConversaDTO
 
 /**
  * Adapter do recycler view de conversas
@@ -18,8 +18,8 @@ open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.Li
     internal var mDataValid: Boolean = false
     internal var mItemClickCallback: ItemClickCallback? = null
 
-    var dados: List<Conversa> = ArrayList<Conversa>()
-        set (novosDados: List<Conversa>) {
+    var dados: List<ConversaDTO> = ArrayList<ConversaDTO>()
+        set (novosDados) {
             if (novosDados != field) {
                 field = novosDados
                 notifyDataSetChanged()
@@ -40,10 +40,10 @@ open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.Li
 
     override fun onBindViewHolder(holder: ListaViewHolder, position: Int) {
         val conversa = dados.get(position)
-//        holder.conteudo.text = cursor!!.getString(indexConteudo)
-//        holder.nomeAutor.text = cursor!!.getString(indexNomeAutor)
-        holder.titulo?.text = conversa.nome
-//        holder.data.text = Utility.getDataFormatada(cursor!!.getLong(indexData), mContext)
+//        holder.conteudo.text =
+        holder.nomeAutor.text = conversa.autor
+        holder.titulo.text = conversa.titulo
+        holder.data.text = conversa.dataEnvio.toString()
     }
 
     override fun getItemCount(): Int {
@@ -51,7 +51,7 @@ open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.Li
     }
 
     override fun getItemId(position: Int): Long {
-        return dados.get(position).id as Long
+        return dados.get(position).id!!
     }
 
     override fun setHasStableIds(hasStableIds: Boolean) {
@@ -67,7 +67,7 @@ open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.Li
         //final ImageView favorito;
         val data: TextView
         val conteudo: TextView
-        val titulo: TextView?
+        val titulo: TextView
         val nomeAutor: TextView
         val container: View
 
@@ -78,7 +78,7 @@ open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.Li
             data = itemView.findViewById(R.id.data) as TextView
             nomeAutor = itemView.findViewById(R.id.nome_autor) as TextView
             conteudo = itemView.findViewById(R.id.conteudo) as TextView
-            titulo = itemView.findViewById(R.id.titulo) as? TextView
+            titulo = itemView.findViewById(R.id.titulo) as TextView
             container = itemView.findViewById(R.id.container_item_lista)
             container.setOnClickListener(this)
         }
