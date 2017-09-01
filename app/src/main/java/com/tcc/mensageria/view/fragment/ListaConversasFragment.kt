@@ -71,7 +71,7 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
 
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
-        mAdapter = ListaConversaAdapter()
+        mAdapter = ListaConversaAdapter(activity)
         mRecyclerView.adapter = mAdapter
         mAdapter.setItemClickCallback(this)
 

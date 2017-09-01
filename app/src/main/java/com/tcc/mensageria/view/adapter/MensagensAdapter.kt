@@ -1,7 +1,6 @@
 package com.tcc.mensageria.view.adapter
 
 import android.content.Context
-import android.database.Cursor
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tcc.mensageria.R
@@ -9,7 +8,7 @@ import com.tcc.mensageria.R
 /**
  * Adapter do recycler view de mensagens
  */
-class MensagensAdapter(cursor: Cursor?, context: Context) : ListaConversaAdapter() {
+class MensagensAdapter(context: Context) : ListaConversaAdapter(context) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListaConversaAdapter.ListaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lista_mensagens, parent, false)

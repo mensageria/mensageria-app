@@ -1,12 +1,8 @@
 package com.tcc.mensageria.view.fragment
 
 
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.CursorLoader
-import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -21,18 +17,16 @@ import com.tcc.mensageria.view.adapter.ListaConversaAdapter
 import com.tcc.mensageria.view.adapter.MensagensAdapter
 
 
-class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, LoaderManager.LoaderCallbacks<Cursor> {
+class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback {
 
     internal val TAG = this.javaClass.simpleName
-    internal val LOADER_ID = 1
-
 
     lateinit internal var mRecyclerView: RecyclerView
     lateinit internal var mAdapter: MensagensAdapter
     lateinit internal var mLayoutManager: RecyclerView.LayoutManager
     lateinit internal var mViewVazia: TextView
 
-    internal var mIdConversa: Int = 0
+    internal var mIdConversa = 0L
 
     private var mInputMessageView: EditText? = null
 
@@ -43,9 +37,7 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, Loa
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        mIdConversa = arguments.getInt(BUNDLE_ID_CONVERSA)
-
-        loaderManager.initLoader(LOADER_ID, null, this)
+        mIdConversa = arguments.getLong(BUNDLE_ID_CONVERSA)
         super.onActivityCreated(savedInstanceState)
     }
 
@@ -57,7 +49,7 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, Loa
 
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
-        mAdapter = MensagensAdapter(null, activity)
+        mAdapter = MensagensAdapter(activity)
         mRecyclerView.adapter = mAdapter
         mAdapter.setItemClickCallback(this)
 
@@ -102,41 +94,6 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback, Loa
 
     override fun onSecondaryIconClick(p: Int) {
 
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-//        val COLUNAS = arrayOf(MensageriaContract.Conversas.NOME_TABELA + "." + MensageriaContract.Mensagens._ID, MensageriaContract.Mensagens.COLUNA_DATA_ENVIO, MensageriaContract.Mensagens.COLUNA_CONTEUDO, MensageriaContract.Autores.COLUNA_NOME, MensageriaContract.Conversas.COLUNA_TITULO)
-//
-//        //conversas._id = mensagens.fk_conversa and conversas._id = x and mensagens.fk_autor = autores._id group by mensagens._id
-//        val selection = MensageriaContract.Conversas.NOME_TABELA + "." +
-//                MensageriaContract.Conversas._ID +
-//                " = " + MensageriaContract.Mensagens.COLUNA_FK_CONVERSA +
-//
-//                " AND " + MensageriaContract.Conversas.NOME_TABELA + "." +
-//                MensageriaContract.Conversas._ID + " = " + mIdConversa +
-//
-//                " AND " + MensageriaContract.Mensagens.COLUNA_FK_AUTOR + " = " +
-//                MensageriaContract.Autores.NOME_TABELA + "." + MensageriaContract.Autores._ID +
-//                ") GROUP BY (" + MensageriaContract.Mensagens.NOME_TABELA + "." + MensageriaContract.Mensagens._ID
-//
-//        val orderBy = MensageriaContract.Mensagens.COLUNA_DATA_ENVIO + " ASC"
-//
-//        return CursorLoader(activity,
-//                MensageriaContract.Conversas.buildConversacomAutorEMensagem(),
-//                COLUNAS,
-//                selection, null,
-//                orderBy
-//        )
-        return CursorLoader(null, null, null, null, null, null)
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
-//        mAdapter.setDados(data)
-//        listaEstaVazia()
-    }
-
-    override fun onLoaderReset(loader: Loader<Cursor>) {
-//        mAdapter.setDados(null)
     }
 
     companion object {

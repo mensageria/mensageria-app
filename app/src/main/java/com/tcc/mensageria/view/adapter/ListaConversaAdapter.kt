@@ -1,5 +1,6 @@
 package com.tcc.mensageria.view.adapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tcc.mensageria.R
 import com.tcc.mensageria.model.ConversaDTO
+import com.tcc.mensageria.utils.Utility
 
 /**
  * Adapter do recycler view de conversas
  */
-open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.ListaViewHolder>() {
-    internal val TAG = this.javaClass.simpleName
+open class ListaConversaAdapter(val mContext: Context) : RecyclerView.Adapter<ListaConversaAdapter.ListaViewHolder>() {
 
     internal var mDataValid: Boolean = false
     internal var mItemClickCallback: ItemClickCallback? = null
@@ -40,10 +41,10 @@ open class ListaConversaAdapter() : RecyclerView.Adapter<ListaConversaAdapter.Li
 
     override fun onBindViewHolder(holder: ListaViewHolder, position: Int) {
         val conversa = dados.get(position)
-//        holder.conteudo.text =
+        holder.conteudo.text = conversa.conteudo
         holder.nomeAutor.text = conversa.autor
         holder.titulo.text = conversa.titulo
-        holder.data.text = conversa.dataEnvio.toString()
+        holder.data.text = Utility.getDataFormatada(conversa.dataEnvio!!.time, mContext)
     }
 
     override fun getItemCount(): Int {
