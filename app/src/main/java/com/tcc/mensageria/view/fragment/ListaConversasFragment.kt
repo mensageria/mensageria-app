@@ -14,13 +14,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tcc.mensageria.R
 import com.tcc.mensageria.model.ConversaDTO
-import com.tcc.mensageria.presenter.ListaConversasViewModel
 import com.tcc.mensageria.service.DaggerMensageriaComponent
 import com.tcc.mensageria.service.DatabaseModule
 import com.tcc.mensageria.service.RetrofitModule
 import com.tcc.mensageria.sync.MensageriaSyncAdapter
 import com.tcc.mensageria.view.activity.ConversaActivity
 import com.tcc.mensageria.view.adapter.ListaConversaAdapter
+import com.tcc.mensageria.viewmodel.ListaConversasViewModel
 
 /**
  * Fragmento que contem uma lista de mensagens

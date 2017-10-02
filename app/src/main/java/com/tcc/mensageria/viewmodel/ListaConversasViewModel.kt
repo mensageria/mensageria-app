@@ -1,4 +1,4 @@
-package com.tcc.mensageria.presenter
+package com.tcc.mensageria.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel

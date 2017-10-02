@@ -1,7 +1,7 @@
 package com.tcc.mensageria.service
 
 import com.tcc.mensageria.network.RestRepository
-import com.tcc.mensageria.presenter.ListaConversasViewModel
+import com.tcc.mensageria.viewmodel.ListaConversasViewModel
 import dagger.Component
 import javax.inject.Singleton
 
