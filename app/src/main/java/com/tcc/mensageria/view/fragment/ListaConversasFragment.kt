@@ -21,6 +21,7 @@ import com.tcc.mensageria.sync.MensageriaSyncAdapter
 import com.tcc.mensageria.view.activity.ConversaActivity
 import com.tcc.mensageria.view.adapter.ListaConversaAdapter
 import com.tcc.mensageria.viewmodel.ListaConversasViewModel
+import kotlinx.android.synthetic.main.fragment_lista_conversas.view.*
 
 /**
  * Fragmento que contem uma lista de mensagens
@@ -66,8 +67,8 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_lista_conversas, container, false)
-        mRecyclerView = rootView.findViewById(R.id.lista_conversas) as RecyclerView
-        mViewVazia = rootView.findViewById(R.id.view_vazia) as TextView
+        mRecyclerView = rootView.lista_conversas
+        mViewVazia = rootView.view_vazia
 
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
@@ -84,8 +85,6 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
         i.putExtra(ConversaFragment.BUNDLE_ID_CONVERSA, item.id)
         startActivity(i)
     }
-
-    override fun onSecondaryIconClick(p: Int) {}
 
     /**
      * Metodo para verificar se o adapter tem dados para popular a view

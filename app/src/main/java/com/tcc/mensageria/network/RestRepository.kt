@@ -4,7 +4,6 @@ import com.tcc.mensageria.database.AutorDao
 import com.tcc.mensageria.database.ConversaDao
 import com.tcc.mensageria.database.MensagemDao
 import com.tcc.mensageria.model.MensagemPOJO
-import com.tcc.mensageria.service.MensagensService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,10 +18,10 @@ class RestRepository @Inject constructor(
                      falha: (t: Throwable) -> Unit) {
         mensagensService.getMensagens().enqueue(object : Callback<List<MensagemPOJO>> {
 
-            override fun onResponse(call: Call<List<MensagemPOJO>>?,
+            override fun onResponse(call: Call<List<MensagemPOJO>>,
                                     response: Response<List<MensagemPOJO>>) {
-                salvarMensagens(response.body())
-                sucesso(response.body())
+                response.body()?.let { salvarMensagens(it) }
+                response.body()?.let { sucesso(it) }
             }
 
             override fun onFailure(call: Call<List<MensagemPOJO>>, t: Throwable) {

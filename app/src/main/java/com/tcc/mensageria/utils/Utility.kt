@@ -6,11 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-/**
- * Classe de utilidades
- */
 object Utility {
-
     fun getDataFormatada(dataMs: Long, context: Context): String {
         val mensagem: String
         val data = Calendar.getInstance()
@@ -33,5 +29,9 @@ object Utility {
         }
         return mensagem
     }
+}
 
+fun Date.formatHour(): String {
+    val dateformat = SimpleDateFormat("HH:mm")
+    return dateformat.format(this)
 }

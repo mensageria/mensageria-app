@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.tcc.mensageria.R
 import com.tcc.mensageria.model.ConversaDTO
 import com.tcc.mensageria.utils.Utility
+import kotlinx.android.synthetic.main.item_lista_conversas.view.*
 
 /**
  * Adapter do recycler view de conversas
@@ -65,7 +66,6 @@ open class ListaConversaAdapter(val mContext: Context) : RecyclerView.Adapter<Li
     inner class ListaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val foto: ImageView?
-        //final ImageView favorito;
         val data: TextView
         val conteudo: TextView
         val titulo: TextView
@@ -73,22 +73,18 @@ open class ListaConversaAdapter(val mContext: Context) : RecyclerView.Adapter<Li
         val container: View
 
         init {
-            foto = itemView.findViewById(R.id.foto) as? ImageView
-            //            favorito = (ImageView) itemView.findViewById(R.id.data);
-            //            favorito.setOnClickListener(this);
-            data = itemView.findViewById(R.id.data) as TextView
-            nomeAutor = itemView.findViewById(R.id.nome_autor) as TextView
-            conteudo = itemView.findViewById(R.id.conteudo) as TextView
-            titulo = itemView.findViewById(R.id.titulo) as TextView
-            container = itemView.findViewById(R.id.container_item_lista)
+            foto = itemView.foto
+            data = itemView.data
+            nomeAutor = itemView.nome_autor
+            conteudo = itemView.conteudo
+            titulo = itemView.titulo
+            container = itemView.container_item_lista
             container.setOnClickListener(this)
         }
 
         override fun onClick(v: View) {
             if (v.id == R.id.container_item_lista) {
                 mItemClickCallback?.onItemClick(adapterPosition)
-            } else {
-                mItemClickCallback?.onSecondaryIconClick(adapterPosition)
             }
         }
     }
@@ -98,7 +94,5 @@ open class ListaConversaAdapter(val mContext: Context) : RecyclerView.Adapter<Li
      */
     interface ItemClickCallback {
         fun onItemClick(p: Int)
-
-        fun onSecondaryIconClick(p: Int)
     }
 }

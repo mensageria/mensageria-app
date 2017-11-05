@@ -3,6 +3,7 @@ package com.tcc.mensageria.service
 import android.content.Context
 import android.preference.PreferenceManager
 import com.tcc.mensageria.R
+import com.tcc.mensageria.network.MensagensService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

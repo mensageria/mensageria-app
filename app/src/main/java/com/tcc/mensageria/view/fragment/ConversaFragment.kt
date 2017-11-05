@@ -10,19 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.TextView
 import com.tcc.mensageria.R
-import com.tcc.mensageria.view.adapter.ListaConversaAdapter
-import com.tcc.mensageria.view.adapter.MensagensAdapter
+import com.tcc.mensageria.view.adapter.ConversaAdapter
+import kotlinx.android.synthetic.main.fragment_conversa.view.*
 
 
-class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback {
-
-    internal val TAG = this.javaClass.simpleName
+class ConversaFragment : Fragment() {
 
     lateinit internal var mRecyclerView: RecyclerView
-    lateinit internal var mAdapter: MensagensAdapter
+    lateinit internal var mAdapter: ConversaAdapter
     lateinit internal var mLayoutManager: RecyclerView.LayoutManager
     lateinit internal var mViewVazia: TextView
 
@@ -44,16 +41,15 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_conversa, container, false)
-        mRecyclerView = rootView.findViewById(R.id.lista_mensagens) as RecyclerView
-        mViewVazia = rootView.findViewById(R.id.view_vazia) as TextView
+        mRecyclerView = rootView.lista_mensagens
+        mViewVazia = rootView.view_vazia
 
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
-        mAdapter = MensagensAdapter(activity)
+        mAdapter = ConversaAdapter()
         mRecyclerView.adapter = mAdapter
-        mAdapter.setItemClickCallback(this)
 
-        mInputMessageView = rootView.findViewById(R.id.mensagem_input) as EditText
+        mInputMessageView = rootView.mensagem_input
         mInputMessageView!!.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
             if (id == R.id.send || id == EditorInfo.IME_NULL) {
                 enviarMensagem()
@@ -62,7 +58,7 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback {
             false
         })
 
-        val sendButton = rootView.findViewById(R.id.botao_enviar) as ImageButton
+        val sendButton = rootView.botao_enviar
         sendButton.setOnClickListener { enviarMensagem() }
 
         return rootView
@@ -87,14 +83,6 @@ class ConversaFragment : Fragment(), ListaConversaAdapter.ItemClickCallback {
 //            return true
 //        }
 //    }
-
-    override fun onItemClick(p: Int) {
-
-    }
-
-    override fun onSecondaryIconClick(p: Int) {
-
-    }
 
     companion object {
         var BUNDLE_ID_CONVERSA = "BUNDLE_ID_CONVERSA"

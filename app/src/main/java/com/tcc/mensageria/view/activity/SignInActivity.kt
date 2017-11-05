@@ -31,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.tcc.mensageria.R
+import kotlinx.android.synthetic.main.activity_google_sign_in.*
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -52,7 +53,7 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
         setContentView(R.layout.activity_google_sign_in)
 
         // Button listeners
-        findViewById(R.id.sign_in_button).setOnClickListener(this)
+        sign_in_button.setOnClickListener(this)
 
         // [START config_signin]
         // Configure Google Sign In
