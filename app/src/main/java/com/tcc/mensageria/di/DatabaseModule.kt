@@ -1,4 +1,4 @@
-package com.tcc.mensageria.service
+package com.tcc.mensageria.di
 
 import android.arch.persistence.room.Room
 import android.content.Context
@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module
+@Module()
 class DatabaseModule(private val context: Context) {
 
     @Singleton

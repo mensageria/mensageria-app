@@ -1,6 +1,7 @@
 package com.tcc.mensageria.view.fragment
 
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -12,7 +13,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import com.tcc.mensageria.R
+import com.tcc.mensageria.di.DaggerMensageriaComponent
+import com.tcc.mensageria.di.DatabaseModule
+import com.tcc.mensageria.di.RetrofitModule
+import com.tcc.mensageria.di.StompModule
 import com.tcc.mensageria.view.adapter.ConversaAdapter
+import com.tcc.mensageria.viewmodel.ConversaViewModel
 import kotlinx.android.synthetic.main.fragment_conversa.view.*
 
 
@@ -22,6 +28,7 @@ class ConversaFragment : Fragment() {
     lateinit internal var mAdapter: ConversaAdapter
     lateinit internal var mLayoutManager: RecyclerView.LayoutManager
     lateinit internal var mViewVazia: TextView
+    lateinit internal var mViewModel: ConversaViewModel
 
     internal var mIdConversa = 0L
 
@@ -31,11 +38,20 @@ class ConversaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
         mIdConversa = arguments.getLong(BUNDLE_ID_CONVERSA)
-        super.onActivityCreated(savedInstanceState)
+
+        mViewModel = ViewModelProviders.of(this).get(ConversaViewModel::class.java)
+
+        val mensageriaComponent = DaggerMensageriaComponent.builder()
+                .retrofitModule(RetrofitModule(activity))
+                .databaseModule(DatabaseModule(activity))
+                .stompModule(StompModule(activity))
+                .build()
+        mensageriaComponent.inject(mViewModel)
+
+        mViewModel.loadConversas(mIdConversa)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

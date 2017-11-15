@@ -20,7 +20,8 @@ class ConversaActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             val arguments = Bundle()
-            arguments.putInt(ConversaFragment.BUNDLE_ID_CONVERSA, intent.getIntExtra(ConversaFragment.BUNDLE_ID_CONVERSA, 0))
+            arguments.putLong(ConversaFragment.BUNDLE_ID_CONVERSA,
+                    intent.getLongExtra(ConversaFragment.BUNDLE_ID_CONVERSA, 0L))
 
             val fragment = ConversaFragment()
             fragment.arguments = arguments

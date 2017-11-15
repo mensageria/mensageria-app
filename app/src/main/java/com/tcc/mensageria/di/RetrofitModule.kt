@@ -1,4 +1,4 @@
-package com.tcc.mensageria.service
+package com.tcc.mensageria.di
 
 import android.content.Context
 import android.preference.PreferenceManager

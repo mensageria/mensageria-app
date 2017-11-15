@@ -4,6 +4,8 @@ import com.tcc.mensageria.database.AutorDao
 import com.tcc.mensageria.database.ConversaDao
 import com.tcc.mensageria.database.MensagemDao
 import com.tcc.mensageria.model.MensagemPOJO
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,12 +33,12 @@ class RestRepository @Inject constructor(
     }
 
     fun salvarMensagens(listaMensagens: List<MensagemPOJO>) {
-        Thread(Runnable {
+        launch(CommonPool) {
             for (mensagemPOJO in listaMensagens) {
                 autorDao.inserir(mensagemPOJO.autor)
                 conversaDao.inserir(mensagemPOJO.chat)
                 mensagemDao.inserir(mensagemPOJO.getMensagem())
             }
-        }).start()
+        }
     }
 }

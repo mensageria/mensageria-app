@@ -13,10 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tcc.mensageria.R
+import com.tcc.mensageria.di.DaggerMensageriaComponent
+import com.tcc.mensageria.di.DatabaseModule
+import com.tcc.mensageria.di.RetrofitModule
+import com.tcc.mensageria.di.StompModule
 import com.tcc.mensageria.model.ConversaDTO
-import com.tcc.mensageria.service.DaggerMensageriaComponent
-import com.tcc.mensageria.service.DatabaseModule
-import com.tcc.mensageria.service.RetrofitModule
 import com.tcc.mensageria.sync.MensageriaSyncAdapter
 import com.tcc.mensageria.view.activity.ConversaActivity
 import com.tcc.mensageria.view.adapter.ListaConversaAdapter
@@ -44,6 +45,7 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
         val mensageriaComponent = DaggerMensageriaComponent.builder()
                 .retrofitModule(RetrofitModule(activity))
                 .databaseModule(DatabaseModule(activity))
+                .stompModule(StompModule(activity))
                 .build()
         mensageriaComponent.inject(mViewModel)
         mViewModel.loadConversas()

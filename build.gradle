@@ -12,6 +12,7 @@ buildscript {
         daggerVersion = '2.11'
         glideVersion = '4.2.0'
         googleServicesVersion = '11.4.2'
+        stompVersion = '1.4.3'
     }
 
 
@@ -22,7 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta4'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
@@ -34,6 +35,7 @@ allprojects {
     repositories {
         maven { url 'https://maven.google.com' }
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
