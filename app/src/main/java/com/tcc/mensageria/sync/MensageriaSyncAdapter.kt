@@ -115,7 +115,7 @@ class MensageriaSyncAdapter : AbstractThreadedSyncAdapter {
             if (null == accountManager.getPassword(newAccount)) {
 
                 /*
-         * Add the account and account type, no password or user data
+         * Add the account and account type, no password or user dados
          * If successful, return the Account object, otherwise report an error.
          */
                 if (!accountManager.addAccountExplicitly(newAccount, "", null)) {

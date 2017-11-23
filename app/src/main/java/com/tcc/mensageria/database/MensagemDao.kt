@@ -6,12 +6,13 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.tcc.mensageria.model.Mensagem
+import com.tcc.mensageria.model.MensagemDTO
 
 @Dao
 interface MensagemDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    public fun inserir(vararg dados: Mensagem): LongArray
+    fun inserir(vararg dados: Mensagem): LongArray
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun inserir(dados: List<Mensagem>): LongArray
@@ -22,6 +23,8 @@ interface MensagemDao {
     @Query("SELECT * FROM mensagem where id=:arg0")
     fun buscarPorId(id: Long): LiveData<Mensagem>
 
-    @Query("SELECT * FROM mensagem  where fk_conversa=:arg0")
-    fun buscarPorIdConversa(id: Long): LiveData<List<Mensagem>>
+    @Query("SELECT m.conteudo, m.dataenvio,m.estado, a.nome nomeAutor " +
+            "FROM mensagem m ,autor a " +
+            "on m.fk_autor = a.id and fk_conversa=:arg0")
+    fun buscarPorIdConversa(id: Long): LiveData<List<MensagemDTO>>
 }

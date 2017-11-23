@@ -1,6 +1,7 @@
 package com.tcc.mensageria.view.fragment
 
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,7 +10,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import com.tcc.mensageria.R
@@ -17,6 +17,7 @@ import com.tcc.mensageria.di.DaggerMensageriaComponent
 import com.tcc.mensageria.di.DatabaseModule
 import com.tcc.mensageria.di.RetrofitModule
 import com.tcc.mensageria.di.StompModule
+import com.tcc.mensageria.model.MensagemDTO
 import com.tcc.mensageria.view.adapter.ConversaAdapter
 import com.tcc.mensageria.viewmodel.ConversaViewModel
 import kotlinx.android.synthetic.main.fragment_conversa.view.*
@@ -39,8 +40,6 @@ class ConversaFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        mIdConversa = arguments.getLong(BUNDLE_ID_CONVERSA)
-
         mViewModel = ViewModelProviders.of(this).get(ConversaViewModel::class.java)
 
         val mensageriaComponent = DaggerMensageriaComponent.builder()
@@ -49,6 +48,12 @@ class ConversaFragment : Fragment() {
                 .stompModule(StompModule(activity))
                 .build()
         mensageriaComponent.inject(mViewModel)
+
+        mIdConversa = arguments.getLong(BUNDLE_ID_CONVERSA)
+
+        mViewModel.getMensagens(mIdConversa).observe(this, Observer<List<MensagemDTO>> { mensagens ->
+            mAdapter.dados = mensagens ?: mAdapter.dados
+        })
 
         mViewModel.loadConversas(mIdConversa)
 
@@ -65,14 +70,14 @@ class ConversaFragment : Fragment() {
         mAdapter = ConversaAdapter()
         mRecyclerView.adapter = mAdapter
 
-        mInputMessageView = rootView.mensagem_input
-        mInputMessageView!!.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
-            if (id == R.id.send || id == EditorInfo.IME_NULL) {
-                enviarMensagem()
-                return@OnEditorActionListener true
-            }
-            false
-        })
+//        mInputMessageView = rootView.mensagem_input
+//        mInputMessageView!!.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
+//            if (id == R.id.send || id == EditorInfo.IME_NULL) {
+//                enviarMensagem()
+//                return@OnEditorActionListener true
+//            }
+//            false
+//        })
 
         val sendButton = rootView.botao_enviar
         sendButton.setOnClickListener { enviarMensagem() }

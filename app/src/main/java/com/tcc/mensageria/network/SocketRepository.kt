@@ -24,7 +24,6 @@ class SocketRepository @Inject constructor(private val stompClient: StompClient,
         }
     }
 
-
     //TODO alterar quando estiver pronta a api
     fun salvarMensagem(mensagemPOJO: MensagemPOJO) {
         launch(CommonPool) {

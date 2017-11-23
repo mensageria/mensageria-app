@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_item_lista"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/foto"
@@ -25,7 +25,7 @@
         android:layout_toStartOf="@id/data"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="titulo da conversa"
+        tools:text="titulo da conversa"
         android:textColor="@android:color/black"
         android:textSize="@dimen/texto_medio" />
 
@@ -41,7 +41,7 @@
         android:layout_below="@+id/titulo"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="nome do autor" />
+        tools:text="nome do autor" />
 
     <TextView
         android:id="@+id/conteudo"
@@ -54,7 +54,7 @@
         android:layout_below="@+id/nome_autor"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="Conteudo da mensagem"
+        tools:text="Conteudo da mensagem"
         android:textColor="@android:color/black" />
 
 
@@ -66,18 +66,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:padding="@dimen/padding"
-        android:text="12/12/1212" />
-
-    <!-- <ImageView
-         android:id="@+id/favorito"
-         android:layout_width="wrap_content"
-         android:layout_height="match_parent"
-         android:layout_alignParentRight="true"
-         android:layout_alignParentEnd="true"
-         android:layout_centerVertical="true"
-         android:clickable="true"
-         android:padding="16dp"
-         android:src="@drawable/ic_star_border_black_36dp"
-         />-->
+        tools:text="12/12/1212" />
 
 </RelativeLayout>

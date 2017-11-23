@@ -16,13 +16,11 @@ data class Mensagem(
         var id: Long? = null,
         var conteudo: String? = null,
         var dataEnvio: Date? = null,
-        var recebida: Boolean? = false,
-        var enviada: Boolean? = false,
+        var estado: Char? = 'R',
         @ColumnInfo(name = "fk_autor")
         var autorId: Long? = null,
         @ColumnInfo(name = "fk_conversa")
         var conversaId: Long? = null
 ) {
-
 
 }

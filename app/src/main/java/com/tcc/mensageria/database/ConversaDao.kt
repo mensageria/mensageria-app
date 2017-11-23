@@ -12,7 +12,7 @@ import com.tcc.mensageria.model.ConversaDTO
 interface ConversaDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    public fun inserir(vararg dados: Conversa): LongArray
+    fun inserir(vararg dados: Conversa): LongArray
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun inserir(dados: List<Conversa>): LongArray
@@ -23,6 +23,6 @@ interface ConversaDao {
     @Query("SELECT * FROM conversa where id=:arg0")
     fun buscarPorId(id: Long): LiveData<Conversa>
 
-    @Query("SELECT c.id,c.nome titulo,a.nome autor, m.conteudo,m.enviada,m.recebida ,MAX(dataEnvio) dataEnvio from Conversa c,Mensagem m ,Autor a on  m.fk_conversa = c.id and m.fk_autor = a.id group by c.id")
+    @Query("SELECT c.id,c.nome titulo,a.nome autor, m.conteudo,m.estado ,MAX(dataEnvio) dataEnvio from Conversa c,Mensagem m ,Autor a on  m.fk_conversa = c.id and m.fk_autor = a.id group by c.id")
     fun buscarUltimas(): LiveData<List<ConversaDTO>>
 }
