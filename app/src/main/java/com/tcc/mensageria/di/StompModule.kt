@@ -23,6 +23,6 @@ class StompModule(private val context: Context) {
         val endereco = sharedPref.getString(context.getString(R.string.pref_endereco_key),
                 context.getString(R.string.endereco_default))
 
-        return Stomp.over(WebSocket::class.java, "ws://$endereco/mensageria/websocket")
+        return Stomp.over(WebSocket::class.java, "http://$endereco/mensageria/websocket")
     }
 }

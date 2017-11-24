@@ -24,7 +24,7 @@ class RetrofitModule(private val context: Context) {
                 context.getString(R.string.endereco_default))
 
         return Retrofit.Builder()
-                .baseUrl("http://" + endereco)
+                .baseUrl("http://$endereco/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
     }

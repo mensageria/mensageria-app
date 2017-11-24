@@ -11,7 +11,7 @@
 
     <!-- strings relacionadas a configurações-->
     <string name="pref_endereco_key">Endereco</string>
-    <string name="endereco_default">mensageria-ws.herokuapp.com/api/</string>
+    <string name="endereco_default">mensageria-ws.herokuapp.com</string>
 
     <!-- MensageriaSyncAdapter -->
     <string name="sync_account_type">mensageria.tcc.com</string>

@@ -2,6 +2,7 @@ package com.tcc.mensageria.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
+import com.tcc.mensageria.database.DbRepository
 import com.tcc.mensageria.database.MensagemDao
 import com.tcc.mensageria.model.MensagemDTO
 import com.tcc.mensageria.network.SocketRepository
@@ -15,11 +16,16 @@ class ConversaViewModel : ViewModel() {
     @Inject
     lateinit var socketRepository: SocketRepository
 
+    @Inject
+    lateinit var dbRepository: DbRepository
+
     fun getMensagens(idConversa: Long): LiveData<List<MensagemDTO>> {
         return mensagemDao.buscarPorIdConversa(idConversa)
     }
 
     fun loadConversas(idConversa: Long) {
-        socketRepository.getMensagens(idConversa)
+        socketRepository.getMensagens(idConversa, {
+            it?.let { it1 -> dbRepository.salvarMensagem(it1) }
+        })
     }
 }
