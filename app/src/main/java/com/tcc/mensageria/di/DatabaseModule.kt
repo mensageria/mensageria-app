@@ -10,11 +10,12 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module()
-class DatabaseModule(private val context: Context) {
+@Module(includes = arrayOf(ApplicationModule::class))
+class DatabaseModule() {
 
     @Singleton
-    @Provides fun provideDatabase(): AppDatabase {
+    @Provides
+    fun provideDatabase(context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, "mensageria").build()
     }
 

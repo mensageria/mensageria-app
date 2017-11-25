@@ -3,6 +3,7 @@ package com.tcc.mensageria.di
 import com.tcc.mensageria.network.RestRepository
 import com.tcc.mensageria.viewmodel.ConversaViewModel
 import com.tcc.mensageria.viewmodel.ListaConversasViewModel
+import com.tcc.mensageria.viewmodel.SignInViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -15,4 +16,6 @@ interface MensageriaComponent {
     fun inject(listaConversasViewModel: ListaConversasViewModel)
 
     fun inject(conversasViewModel: ConversaViewModel)
+
+    fun inject(signInViewModel: SignInViewModel)
 }

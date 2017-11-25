@@ -13,10 +13,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import com.tcc.mensageria.R
+import com.tcc.mensageria.di.ApplicationModule
 import com.tcc.mensageria.di.DaggerMensageriaComponent
-import com.tcc.mensageria.di.DatabaseModule
-import com.tcc.mensageria.di.RetrofitModule
-import com.tcc.mensageria.di.StompModule
 import com.tcc.mensageria.model.MensagemDTO
 import com.tcc.mensageria.view.adapter.ConversaAdapter
 import com.tcc.mensageria.viewmodel.ConversaViewModel
@@ -43,9 +41,7 @@ class ConversaFragment : Fragment() {
         mViewModel = ViewModelProviders.of(this).get(ConversaViewModel::class.java)
 
         val mensageriaComponent = DaggerMensageriaComponent.builder()
-                .retrofitModule(RetrofitModule(activity))
-                .databaseModule(DatabaseModule(activity))
-                .stompModule(StompModule(activity))
+                .applicationModule(ApplicationModule(context))
                 .build()
         mensageriaComponent.inject(mViewModel)
 

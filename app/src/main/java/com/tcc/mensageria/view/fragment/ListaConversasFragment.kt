@@ -1,10 +1,10 @@
 package com.tcc.mensageria.view.fragment
 
-import android.arch.lifecycle.LifecycleFragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,10 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tcc.mensageria.R
+import com.tcc.mensageria.di.ApplicationModule
 import com.tcc.mensageria.di.DaggerMensageriaComponent
-import com.tcc.mensageria.di.DatabaseModule
-import com.tcc.mensageria.di.RetrofitModule
-import com.tcc.mensageria.di.StompModule
 import com.tcc.mensageria.model.ConversaDTO
 import com.tcc.mensageria.sync.MensageriaSyncAdapter
 import com.tcc.mensageria.view.activity.ConversaActivity
@@ -27,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_lista_conversas.view.*
 /**
  * Fragmento que contem uma lista de mensagens
  */
-class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemClickCallback {
+class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallback {
 
     lateinit internal var mRecyclerView: RecyclerView
     lateinit internal var mAdapter: ListaConversaAdapter
@@ -43,9 +41,7 @@ class ListaConversasFragment : LifecycleFragment(), ListaConversaAdapter.ItemCli
         mViewModel = ViewModelProviders.of(this).get(ListaConversasViewModel::class.java)
 
         val mensageriaComponent = DaggerMensageriaComponent.builder()
-                .retrofitModule(RetrofitModule(activity))
-                .databaseModule(DatabaseModule(activity))
-                .stompModule(StompModule(activity))
+                .applicationModule(ApplicationModule(activity))
                 .build()
         mensageriaComponent.inject(mViewModel)
         mViewModel.loadConversas()

@@ -11,14 +11,13 @@ import ua.naiksoftware.stomp.client.StompClient
 import javax.inject.Singleton
 
 
-@Module
-class StompModule(private val context: Context) {
+@Module(includes = arrayOf(ApplicationModule::class))
+class StompModule() {
 
     //TODO trocar quando remover a configuração de url manual
     @Singleton
     @Provides
-    fun provideStomp(): StompClient {
-
+    fun provideStomp(context: Context): StompClient {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val endereco = sharedPref.getString(context.getString(R.string.pref_endereco_key),
                 context.getString(R.string.endereco_default))

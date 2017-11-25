@@ -11,20 +11,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
-@Module
-class RetrofitModule(private val context: Context) {
+@Module(includes = arrayOf(ApplicationModule::class))
+class RetrofitModule() {
 
     //TODO trocar quando remover a configuração de url manual
     @Singleton
     @Provides
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(context: Context): Retrofit {
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val endereco = sharedPref.getString(context.getString(R.string.pref_endereco_key),
                 context.getString(R.string.endereco_default))
 
         return Retrofit.Builder()
-                .baseUrl("http://$endereco/api/")
+                .baseUrl("http://$endereco/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
     }
