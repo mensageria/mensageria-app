@@ -17,6 +17,7 @@ package com.tcc.mensageria.view.activity
  */
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -30,8 +31,13 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.tcc.mensageria.BuildConfig
 import com.tcc.mensageria.R
+import com.tcc.mensageria.di.ApplicationModule
+import com.tcc.mensageria.di.DaggerMensageriaComponent
+import com.tcc.mensageria.viewmodel.SignInViewModel
 import kotlinx.android.synthetic.main.activity_google_sign_in.*
+
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -39,7 +45,7 @@ import kotlinx.android.synthetic.main.activity_google_sign_in.*
 class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     // [START declare_auth]
-    private var mAuth: FirebaseAuth? = null
+    lateinit private var mAuth: FirebaseAuth
     // [END declare_auth]
 
     // [START declare_auth_listener]
@@ -48,8 +54,17 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
 
     private var mGoogleApiClient: GoogleApiClient? = null
 
+    lateinit private var mViewModel: SignInViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mViewModel = ViewModelProviders.of(this).get(SignInViewModel::class.java)
+        val mensageriaComponent = DaggerMensageriaComponent.builder()
+                .applicationModule(ApplicationModule(this))
+                .build()
+        mensageriaComponent.inject(mViewModel)
+
         setContentView(R.layout.activity_google_sign_in)
 
         // Button listeners
@@ -58,7 +73,7 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
         // [START config_signin]
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(BuildConfig.AUTH_TOKEN)
                 .requestEmail()
                 .build()
         // [END config_signin]
@@ -76,11 +91,7 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
         mAuthListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             if (user != null) {
-                // User is signed in
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.uid)
-
-                setResult(Activity.RESULT_OK, Intent())
-                finish()
+                OnAuthSuccess()
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out")
@@ -92,7 +103,7 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
     // [START on_start_add_listener]
     public override fun onStart() {
         super.onStart()
-        mAuth!!.addAuthStateListener(mAuthListener!!)
+        mAuth.addAuthStateListener(mAuthListener!!)
     }
     // [END on_start_add_listener]
 
@@ -100,7 +111,7 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
     public override fun onStop() {
         super.onStop()
         if (mAuthListener != null) {
-            mAuth!!.removeAuthStateListener(mAuthListener!!)
+            mAuth.removeAuthStateListener(mAuthListener!!)
         }
     }
     // [END on_stop_remove_listener]
@@ -125,22 +136,26 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
 
     // [START auth_with_google]
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-        mAuth!!.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful)
+        mViewModel.registrar(acct, {
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this) { task ->
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful)
 
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    if (!task.isSuccessful) {
-                        Log.w(TAG, "signInWithCredential", task.exception)
-                        Toast.makeText(this@SignInActivity, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show()
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful) {
+                            Log.w(TAG, "signInWithCredential", task.exception)
+                            Toast.makeText(this@SignInActivity, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
+        })
+
+
     }
     // [END auth_with_google]
 
@@ -154,20 +169,16 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
 
     private fun signOut() {
         // Firebase sign out
-        mAuth!!.signOut()
+        mAuth.signOut()
 
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback { }
     }
 
-    private fun revokeAccess() {
-        // Firebase sign out
-        mAuth!!.signOut()
-
-        // Google revoke access
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback { }
+    private fun OnAuthSuccess() {
+        setResult(Activity.RESULT_OK, Intent())
+        finish()
     }
-
 
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
@@ -187,7 +198,5 @@ class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedLi
 
         private val TAG = "GoogleActivity"
         private val RC_SIGN_IN = 9001
-
-        val EXTRA_LOGOUT = "EXTRA_LOGOUT"
     }
 }

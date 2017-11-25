@@ -8,8 +8,7 @@ class ConversaDTO(
         var titulo: String? = null,
         var autor: String? = null,
         var conteudo: String? = null,
-        var enviada: Boolean? = null,
-        var recebida: Boolean? = null,
+        var estado: Char? = 'R',
         var dataEnvio: Date? = null
 ) {
 }

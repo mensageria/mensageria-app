@@ -20,9 +20,13 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "AUTH_TOKEN", '"217090958383-87ol3i0oee8v7v336nslv1oipnn8o28m.apps.googleusercontent.com"'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "AUTH_TOKEN", '"217090958383-87ol3i0oee8v7v336nslv1oipnn8o28m.apps.googleusercontent.com"'
         }
     }
 }
@@ -42,13 +46,11 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support:support-v4:$supportLibraryVersion"
 
-    implementation "com.google.android.gms:play-services-gcm:$googleServicesVersion"
     implementation "com.google.firebase:firebase-core:$googleServicesVersion"
     implementation "com.google.firebase:firebase-messaging:$googleServicesVersion"
     implementation "com.google.firebase:firebase-auth:$googleServicesVersion"
     implementation "com.google.android.gms:play-services-auth:$googleServicesVersion"
     implementation "com.google.android.gms:play-services-analytics:$googleServicesVersion"
-    implementation "com.google.android.gms:play-services-auth:$googleServicesVersion"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"

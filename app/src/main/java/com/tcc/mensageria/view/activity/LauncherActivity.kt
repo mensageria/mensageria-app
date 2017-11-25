@@ -4,12 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
-class LaucherActivity : AppCompatActivity() {
+class LauncherActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val intent = Intent(this, MainActivity::class.java)
-//        startActivityForResult(intent, SIGN_IN_CODE)
-        startActivity(intent)
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivityForResult(intent, SIGN_IN_CODE)
         super.onCreate(savedInstanceState)
     }
 
