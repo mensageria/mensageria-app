@@ -20,7 +20,6 @@ import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -42,7 +41,7 @@ import kotlinx.android.synthetic.main.activity_google_sign_in.*
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
  */
-class SignInActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     // [START declare_auth]
     lateinit private var mAuth: FirebaseAuth
