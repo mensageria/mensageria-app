@@ -33,6 +33,15 @@ class ConversaFragment : Fragment() {
 
     private var mInputMessageView: EditText? = null
 
+    override fun onStart() {
+        super.onStart()
+        mViewModel.connect()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mViewModel.disconnect()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

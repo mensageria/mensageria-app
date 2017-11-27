@@ -11,13 +11,13 @@ import javax.inject.Inject
 class ConversaViewModel : ViewModel() {
 
     @Inject
-    lateinit var mensagemDao: MensagemDao
+    lateinit protected var mensagemDao: MensagemDao
 
     @Inject
-    lateinit var socketRepository: SocketRepository
+    lateinit protected var socketRepository: SocketRepository
 
     @Inject
-    lateinit var dbRepository: DbRepository
+    lateinit protected var dbRepository: DbRepository
 
     fun getMensagens(idConversa: Long): LiveData<List<MensagemDTO>> {
         return mensagemDao.buscarPorIdConversa(idConversa)
@@ -27,5 +27,13 @@ class ConversaViewModel : ViewModel() {
         socketRepository.getMensagens(idConversa, {
             it?.let { it1 -> dbRepository.salvarMensagem(it1) }
         })
+    }
+
+    fun connect() {
+        socketRepository.connect()
+    }
+
+    fun disconnect() {
+        socketRepository.disconnect()
     }
 }

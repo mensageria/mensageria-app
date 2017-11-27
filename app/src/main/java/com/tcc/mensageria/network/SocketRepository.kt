@@ -8,8 +8,12 @@ import javax.inject.Inject
 
 class SocketRepository @Inject constructor(private val stompClient: StompClient) {
 
-    init {
+    fun connect() {
         stompClient.connect()
+    }
+
+    fun disconnect() {
+        stompClient.disconnect()
     }
 
     fun getMensagens(idConversa: Long, callback: (MensagemPOJO?) -> Unit) {
