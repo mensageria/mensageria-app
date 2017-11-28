@@ -11,7 +11,7 @@ buildscript {
         retrofitVersion = '2.3.0'
         daggerVersion = '2.11'
         glideVersion = '4.2.0'
-        googleServicesVersion = '11.4.2'
+        googleServicesVersion = '11.6.0'
         stompVersion = '1.4.3'
     }
 

@@ -20,13 +20,17 @@ android {
         }
     }
     buildTypes {
+
+
         debug {
             buildConfigField "String", "AUTH_TOKEN", '"217090958383-87ol3i0oee8v7v336nslv1oipnn8o28m.apps.googleusercontent.com"'
+            buildConfigField "String", "autor_key", '"autor_key"'
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "AUTH_TOKEN", '"217090958383-87ol3i0oee8v7v336nslv1oipnn8o28m.apps.googleusercontent.com"'
+            buildConfigField "String", "autor_key", '"autor_key"'
         }
     }
 }
@@ -39,7 +43,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     testImplementation "junit:junit:$junitVersion"
-    androidTestCompile "com.android.support.test:runner:$androidTestVersion"
+    androidTestImplementation "com.android.support.test:runner:$androidTestVersion"
 
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
@@ -50,7 +54,7 @@ dependencies {
     implementation "com.google.firebase:firebase-messaging:$googleServicesVersion"
     implementation "com.google.firebase:firebase-auth:$googleServicesVersion"
     implementation "com.google.android.gms:play-services-auth:$googleServicesVersion"
-    implementation "com.google.android.gms:play-services-analytics:$googleServicesVersion"
+
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -58,7 +62,7 @@ dependencies {
 
     implementation "android.arch.lifecycle:runtime:$archVersion"
     implementation "android.arch.lifecycle:extensions:$archVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$archVersion"
+    kapt "android.arch.lifecycle:compiler:$archVersion"
     implementation "android.arch.persistence.room:runtime:$archVersion"
     kapt "android.arch.persistence.room:compiler:$archVersion"
 
