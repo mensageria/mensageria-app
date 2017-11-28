@@ -1,6 +1,5 @@
 package com.tcc.mensageria.network
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tcc.mensageria.model.MensagemPOJO
 import ua.naiksoftware.stomp.client.StompClient
@@ -8,6 +7,7 @@ import javax.inject.Inject
 
 class SocketRepository @Inject constructor(private val stompClient: StompClient) {
 
+    //TODO corrigir erro ao fechar e abrir a aplicação
     fun connect() {
         stompClient.connect()
     }
@@ -17,13 +17,18 @@ class SocketRepository @Inject constructor(private val stompClient: StompClient)
     }
 
     fun getMensagens(idConversa: Long, callback: (MensagemPOJO?) -> Unit) {
-        stompClient.topic("/topic/mensagens/conversa/$idConversa").subscribe { res ->
-            Log.d(this::class.simpleName, res.getPayload())
+        stompClient.topic("/topic/mensagens/conversa/$idConversa").subscribe {
             try {
-                val dados = Gson().fromJson(res.payload, MensagemPOJO::class.java)
+                val dados = Gson().fromJson(it.payload, MensagemPOJO::class.java)
                 callback(dados)
             } catch (throwable: Throwable) {
             }
         }
     }
+
+    fun sendMensagem(idConversa: Long, mensagemPOJO: MensagemPOJO) {
+        val json = Gson().toJson(mensagemPOJO)
+        stompClient.send("/app/enviar/mensagens/conversa/$idConversa", json).subscribe()
+    }
+
 }

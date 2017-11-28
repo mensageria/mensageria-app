@@ -10,10 +10,10 @@ import com.tcc.mensageria.model.Autor
 @Dao
 interface AutorDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserir(vararg dados: Autor): LongArray
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserir(dados: List<Autor>): LongArray
 
     @Query("SELECT * FROM autor")

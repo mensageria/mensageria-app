@@ -11,10 +11,10 @@ import com.tcc.mensageria.model.MensagemDTO
 @Dao
 interface MensagemDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserir(vararg dados: Mensagem): LongArray
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserir(dados: List<Mensagem>): LongArray
 
     @Query("SELECT * FROM mensagem")

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import com.tcc.mensageria.R
@@ -31,7 +32,7 @@ class ConversaFragment : Fragment() {
 
     internal var mIdConversa = 0L
 
-    private var mInputMessageView: EditText? = null
+    lateinit private var mInputMessageView: EditText
 
     override fun onStart() {
         super.onStart()
@@ -58,6 +59,7 @@ class ConversaFragment : Fragment() {
 
         mViewModel.getMensagens(mIdConversa).observe(this, Observer<List<MensagemDTO>> { mensagens ->
             mAdapter.dados = mensagens ?: mAdapter.dados
+            mRecyclerView.smoothScrollToPosition(mAdapter.dados.size - 1)
         })
 
         mViewModel.loadConversas(mIdConversa)
@@ -71,18 +73,22 @@ class ConversaFragment : Fragment() {
         mViewVazia = rootView.view_vazia
 
         mLayoutManager = LinearLayoutManager(activity)
+        (mLayoutManager as LinearLayoutManager).stackFromEnd = true
         mRecyclerView.layoutManager = mLayoutManager
         mAdapter = ConversaAdapter()
         mRecyclerView.adapter = mAdapter
 
-//        mInputMessageView = rootView.mensagem_input
-//        mInputMessageView!!.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
-//            if (id == R.id.send || id == EditorInfo.IME_NULL) {
-//                enviarMensagem()
-//                return@OnEditorActionListener true
-//            }
-//            false
-//        })
+        mRecyclerView
+
+        mInputMessageView = rootView.mensagem_input
+        mInputMessageView.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
+            var handled = false
+            if (id == EditorInfo.IME_ACTION_SEND) {
+                enviarMensagem()
+                handled = true
+            }
+            handled
+        })
 
         val sendButton = rootView.botao_enviar
         sendButton.setOnClickListener { enviarMensagem() }
@@ -90,7 +96,10 @@ class ConversaFragment : Fragment() {
         return rootView
     }
 
-    private fun enviarMensagem() {}
+    private fun enviarMensagem() {
+        mViewModel.sendMensagem(mIdConversa, mInputMessageView.text.toString())
+        mInputMessageView.text.clear()
+    }
 
     /**
      * Metodo para verificar se o adapter tem dados para popular a view

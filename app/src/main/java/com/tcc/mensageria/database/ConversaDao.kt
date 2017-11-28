@@ -11,10 +11,10 @@ import com.tcc.mensageria.model.ConversaDTO
 @Dao
 interface ConversaDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserir(vararg dados: Conversa): LongArray
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserir(dados: List<Conversa>): LongArray
 
     @Query("SELECT * FROM conversa")
