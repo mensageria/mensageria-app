@@ -12,5 +12,6 @@ data class Autor(
         var email: String? = null,
         var nome: String? = null,
         @ColumnInfo(name = "ultimo_acesso")
-        var ultimoAcesso: Date? = null
+        var ultimoAcesso: Date? = null,
+        var prioridade: Int = 0
 )

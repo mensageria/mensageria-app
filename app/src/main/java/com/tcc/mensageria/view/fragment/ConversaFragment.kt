@@ -75,7 +75,7 @@ class ConversaFragment : Fragment() {
         mLayoutManager = LinearLayoutManager(activity)
         (mLayoutManager as LinearLayoutManager).stackFromEnd = true
         mRecyclerView.layoutManager = mLayoutManager
-        mAdapter = ConversaAdapter()
+        mAdapter = ConversaAdapter(activity)
         mRecyclerView.adapter = mAdapter
 
         mRecyclerView

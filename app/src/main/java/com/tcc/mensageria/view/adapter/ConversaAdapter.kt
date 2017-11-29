@@ -1,5 +1,7 @@
 package com.tcc.mensageria.view.adapter
 
+import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +15,7 @@ import kotlinx.android.synthetic.main.item_lista_conversas.view.*
 /**
  * Adapter do recycler view de mensagens
  */
-class ConversaAdapter : RecyclerView.Adapter<ConversaAdapter.ViewHolder>() {
+class ConversaAdapter(val context: Context) : RecyclerView.Adapter<ConversaAdapter.ViewHolder>() {
 
     // itens para popular a lista
     var dados: List<MensagemDTO> = ArrayList()
@@ -26,12 +28,14 @@ class ConversaAdapter : RecyclerView.Adapter<ConversaAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = dados.size
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dados[position]
         holder.data.text = item.dataEnvio?.formatHour()
         holder.conteudo.text = item.conteudo
         holder.nomeAutor.text = item.nomeAutor
+        if (item.prioridade > 0) {
+            holder.nomeAutor.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
