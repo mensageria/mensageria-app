@@ -7,7 +7,10 @@ import javax.inject.Inject
 
 class SocketRepository @Inject constructor(private val stompClient: StompClient) {
 
-    //TODO corrigir erro ao fechar e abrir a aplicação
+    init {
+        connect()
+    }
+
     fun connect() {
         stompClient.connect()
     }

@@ -34,13 +34,8 @@ class ConversaFragment : Fragment() {
 
     lateinit private var mInputMessageView: EditText
 
-    override fun onStart() {
-        super.onStart()
-        mViewModel.connect()
-    }
-
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         mViewModel.disconnect()
     }
 
