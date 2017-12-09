@@ -3,6 +3,7 @@ package com.tcc.mensageria.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import android.content.SharedPreferences
+import com.tcc.mensageria.BuildConfig
 import com.tcc.mensageria.database.DbRepository
 import com.tcc.mensageria.database.MensagemDao
 import com.tcc.mensageria.model.Autor
@@ -48,5 +49,9 @@ class ConversaViewModel : ViewModel() {
 
     fun disconnect() {
         socketRepository.disconnect()
+    }
+
+    fun getUserId(): Long {
+        return sharedPreferences.getLong(BuildConfig.autor_key, 0)
     }
 }

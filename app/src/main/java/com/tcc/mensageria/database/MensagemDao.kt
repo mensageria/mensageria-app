@@ -23,7 +23,7 @@ interface MensagemDao {
     @Query("SELECT * FROM mensagem where id=:arg0")
     fun buscarPorId(id: Long): LiveData<Mensagem>
 
-    @Query("SELECT m.conteudo, m.dataenvio,m.estado, a.nome nomeAutor, a.prioridade " +
+    @Query("SELECT m.conteudo, m.dataenvio,m.estado, a.nome nomeAutor, a.prioridade,a.id idAutor " +
             "FROM mensagem m ,autor a " +
             "on m.fk_autor = a.id and fk_conversa=:arg0")
     fun buscarPorIdConversa(id: Long): LiveData<List<MensagemDTO>>

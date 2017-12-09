@@ -7,7 +7,8 @@
         android:id="@+id/lista_mensagens"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginBottom="@dimen/padding" />
 
     <LinearLayout
         android:layout_width="match_parent"

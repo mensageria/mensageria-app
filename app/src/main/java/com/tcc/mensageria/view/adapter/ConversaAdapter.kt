@@ -1,21 +1,23 @@
 package com.tcc.mensageria.view.adapter
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tcc.mensageria.R
 import com.tcc.mensageria.model.MensagemDTO
 import com.tcc.mensageria.utils.formatHour
-import kotlinx.android.synthetic.main.item_lista_conversas.view.*
+import kotlinx.android.synthetic.main.item_message_received.view.*
+
 
 /**
  * Adapter do recycler view de mensagens
  */
-class ConversaAdapter(val context: Context) : RecyclerView.Adapter<ConversaAdapter.ViewHolder>() {
+class ConversaAdapter(val context: Context, val idAutor: Long) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val VIEW_TYPE_MESSAGE_SENT = 1
+    private val VIEW_TYPE_MESSAGE_RECEIVED = 2
 
     // itens para popular a lista
     var dados: List<MensagemDTO> = ArrayList()
@@ -28,30 +30,66 @@ class ConversaAdapter(val context: Context) : RecyclerView.Adapter<ConversaAdapt
 
     override fun getItemCount(): Int = dados.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = dados[position]
-        holder.data.text = item.dataEnvio?.formatHour()
-        holder.conteudo.text = item.conteudo
-        holder.nomeAutor.text = item.nomeAutor
-        if (item.prioridade > 0) {
-            holder.nomeAutor.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+    override fun getItemViewType(position: Int): Int {
+        val message = dados[position]
+
+        return if (message.idAutor == idAutor) {
+            // If the current user is the sender of the message
+            VIEW_TYPE_MESSAGE_SENT
+        } else {
+            // If some other user sent the message
+            VIEW_TYPE_MESSAGE_RECEIVED
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lista_mensagens, parent, false)
-        return ViewHolder(view)
+    // Inflates the appropriate layout according to the ViewType.
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
+        val view: View
+
+        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+            view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_message_sent, parent, false)
+            return SentMessageHolder(view)
+        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+            view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_message_received, parent, false)
+            return ReceivedMessageHolder(view)
+        }
+
+        return null
     }
 
-    /**
-     * Classe com as referencias para as views
-     */
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val message = dados[position]
 
-        val data: TextView = itemView.data
-        val conteudo: TextView = itemView.conteudo
-        val nomeAutor: TextView = itemView.nome_autor
+        when (holder.itemViewType) {
+            VIEW_TYPE_MESSAGE_SENT -> (holder as SentMessageHolder).bind(message)
+            VIEW_TYPE_MESSAGE_RECEIVED -> (holder as ReceivedMessageHolder).bind(message)
+        }
+    }
 
+    private inner class SentMessageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val messageText = itemView.text_message_body
+        val timeText = itemView.text_message_time
+
+        internal fun bind(message: MensagemDTO) {
+            messageText.text = message.conteudo
+            timeText.text = message.dataEnvio?.formatHour()
+        }
+    }
+
+    private inner class ReceivedMessageHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val messageText = itemView.text_message_body
+        val timeText = itemView.text_message_time
+        val nameText = itemView.text_message_name
+        val profileImage = itemView.image_message_profile
+
+
+        internal fun bind(message: MensagemDTO) {
+            messageText.text = message.conteudo
+            timeText.text = message.dataEnvio?.formatHour()
+            nameText.text = message.nomeAutor
+        }
     }
 
 }
