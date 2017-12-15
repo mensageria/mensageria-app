@@ -26,8 +26,8 @@
             android:hint="@string/prompt_mensagem"
             android:imeActionLabel="@string/action_enviar"
             android:imeOptions="actionSend"
-            android:inputType="text"
-            android:maxLines="1"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
             android:singleLine="true" />
 
         <ImageButton
