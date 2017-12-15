@@ -17,7 +17,8 @@ object Utility {
         val locale = Locale.getDefault()
 
         if (dias < 1) {
-            mensagem = data.get(Calendar.HOUR_OF_DAY).toString() + ":" + data.get(Calendar.MINUTE)
+            val formatter = SimpleDateFormat("kk:mm")
+            mensagem = formatter.format(data.time)
         } else if (dias < 2) {
             mensagem = context.getString(R.string.ontem)
         } else if (dias < 7) {
