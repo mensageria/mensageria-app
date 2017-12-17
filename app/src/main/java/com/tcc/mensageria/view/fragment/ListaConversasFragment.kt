@@ -11,12 +11,13 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.tcc.mensageria.R
 import com.tcc.mensageria.di.ApplicationModule
 import com.tcc.mensageria.di.DaggerMensageriaComponent
 import com.tcc.mensageria.model.ConversaDTO
-import com.tcc.mensageria.sync.MensageriaSyncAdapter
 import com.tcc.mensageria.view.activity.ConversaActivity
 import com.tcc.mensageria.view.adapter.ListaConversaAdapter
 import com.tcc.mensageria.viewmodel.ListaConversasViewModel
@@ -31,6 +32,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
     lateinit internal var mAdapter: ListaConversaAdapter
     lateinit internal var mLayoutManager: RecyclerView.LayoutManager
     lateinit internal var mViewVazia: TextView
+    lateinit internal var mLoading: ProgressBar
     lateinit internal var mViewModel: ListaConversasViewModel
 
 
@@ -44,17 +46,28 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
                 .applicationModule(ApplicationModule(activity))
                 .build()
         mensageriaComponent.inject(mViewModel)
-        mViewModel.loadConversas()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val id = item.itemId
         if (id == R.id.action_refresh) {
-            mViewModel.loadConversas()
-            MensageriaSyncAdapter.syncImmediately(activity)
+            atualizar()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun atualizar() {
+        mudarLoading(View.VISIBLE)
+        mViewModel.loadConversas({ mudarLoading(View.GONE) },
+                {
+                    Toast.makeText(activity, "Erro de conexão com o servidor", Toast.LENGTH_SHORT).show()
+                    mudarLoading(View.GONE)
+                })
+    }
+
+    fun mudarLoading(visibilidade: Int) {
+        mLoading.visibility = visibilidade
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +75,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
         val rootView = inflater.inflate(R.layout.fragment_lista_conversas, container, false)
         mRecyclerView = rootView.lista_conversas
         mViewVazia = rootView.view_vazia
+        mLoading = rootView.progressBar
 
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
@@ -69,6 +83,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
         mRecyclerView.adapter = mAdapter
         mAdapter.setItemClickCallback(this)
 
+        atualizar()
         return rootView
     }
 
@@ -82,18 +97,14 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
     /**
      * Metodo para verificar se o adapter tem dados para popular a view
      * caso nao haja dados uma mensagem é mostrada
-
-     * @return false se a lista puder ser populada e true se nao puder
      */
-    private fun listaEstaVazia(): Boolean {
-        if (mAdapter.mDataValid) {
-            mRecyclerView.visibility = View.VISIBLE
-            mViewVazia.visibility = View.GONE
-            return false
-        } else {
+    private fun verificarLista() {
+        if (mAdapter.dados.isEmpty()) {
             mRecyclerView.visibility = View.GONE
             mViewVazia.visibility = View.VISIBLE
-            return true
+        } else {
+            mRecyclerView.visibility = View.VISIBLE
+            mViewVazia.visibility = View.GONE
         }
     }
 
@@ -103,6 +114,7 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
             if (conversas != null) {
                 mAdapter.dados = conversas
             }
+            verificarLista()
         })
     }
 

@@ -27,13 +27,14 @@ class ListaConversasViewModel() : ViewModel() {
             return conversaDao.buscarUltimas()
         }
 
-    public fun loadConversas() {
+    public fun loadConversas(sucesso: () -> Unit, error: (erro: Throwable) -> Unit) {
         restRepository.getMensagens({
             Log.d(this::class.simpleName, "SUCESSO" + it.toString())
             dbRepository.salvarMensagem(it)
-
+            sucesso()
         }, {
             Log.d(this::class.simpleName, "ERRO" + it.toString())
+            error(it)
         })
     }
 }

@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.item_lista_conversas.view.*
  */
 open class ListaConversaAdapter(val mContext: Context) : RecyclerView.Adapter<ListaConversaAdapter.ListaViewHolder>() {
 
-    internal var mDataValid: Boolean = false
     internal var mItemClickCallback: ItemClickCallback? = null
 
     var dados: List<ConversaDTO> = ArrayList<ConversaDTO>()
