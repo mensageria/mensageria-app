@@ -22,6 +22,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -55,6 +56,8 @@ class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListene
 
     lateinit private var mViewModel: SignInViewModel
 
+    lateinit var mLoading: FrameLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,6 +68,7 @@ class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListene
         mensageriaComponent.inject(mViewModel)
 
         setContentView(R.layout.activity_google_sign_in)
+        mLoading = this.loading_frame
 
         // Button listeners
         sign_in_button.setOnClickListener(this)
@@ -128,7 +132,10 @@ class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListene
                 if (account != null) {
                     firebaseAuthWithGoogle(account)
                 }
+            } else {
+                mostrarErro("Erro ao autenticar com o google")
             }
+
         }
     }
     // [END onactivityresult]
@@ -148,11 +155,10 @@ class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListene
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful) {
                             Log.w(TAG, "signInWithCredential", task.exception)
-                            Toast.makeText(this@SignInActivity, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show()
+                            mostrarErro("Erro ao autenticar com o google")
                         }
                     }
-        })
+        }, { erro -> mostrarErro("Erro de conexão com a API") })
 
 
     }
@@ -161,6 +167,7 @@ class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListene
     // [START signin]
     private fun signIn() {
         signOut()
+        mudarLoading(View.VISIBLE)
         val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
@@ -191,6 +198,16 @@ class SignInActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListene
         if (i == R.id.sign_in_button) {
             signIn()
         }
+    }
+
+    fun mudarLoading(visibilidade: Int) {
+        mLoading.visibility = visibilidade
+    }
+
+    fun mostrarErro(mensagem: String) {
+        mudarLoading(View.GONE)
+        Toast.makeText(this, mensagem,
+                Toast.LENGTH_SHORT).show()
     }
 
     companion object {

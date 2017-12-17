@@ -19,7 +19,7 @@ class SignInViewModel : ViewModel() {
     @Inject
     lateinit var sharedPreferences: SharedPreferences.Editor
 
-    fun registrar(user: GoogleSignInAccount, sucesso: () -> Unit) {
+    fun registrar(user: GoogleSignInAccount, sucesso: () -> Unit, erro: (erro: Throwable) -> Unit) {
         val nome = Build.MANUFACTURER + " " + Build.MODEL
         val autor = Autor(nome = user.displayName, email = user.email)
         val dispositivo = Dispositivo(nome, autor)
@@ -29,6 +29,7 @@ class SignInViewModel : ViewModel() {
             sharedPreferences.commit()
             sucesso()
         }, {
+            erro(it)
             Log.d(this::class.simpleName, "ERRO " + it.toString())
         })
     }
