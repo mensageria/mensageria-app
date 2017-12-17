@@ -18,6 +18,7 @@ class ConversaAdapter(val context: Context, val idAutor: Long) : RecyclerView.Ad
 
     private val VIEW_TYPE_MESSAGE_SENT = 1
     private val VIEW_TYPE_MESSAGE_RECEIVED = 2
+    private val VIEW_TYPE_MESSAGE_RECEIVED_PRIORITY = 3
 
     // itens para popular a lista
     var dados: List<MensagemDTO> = ArrayList()
@@ -31,9 +32,13 @@ class ConversaAdapter(val context: Context, val idAutor: Long) : RecyclerView.Ad
     override fun getItemCount(): Int = dados.size
 
     override fun getItemViewType(position: Int): Int {
-        val message = dados[position]
+        val mensagem = dados[position]
 
-        return if (message.idAutor == idAutor) {
+        if (mensagem.prioridade > 0) {
+            return VIEW_TYPE_MESSAGE_RECEIVED_PRIORITY
+        }
+
+        return if (mensagem.idAutor == idAutor) {
             // If the current user is the sender of the message
             VIEW_TYPE_MESSAGE_SENT
         } else {
@@ -46,17 +51,23 @@ class ConversaAdapter(val context: Context, val idAutor: Long) : RecyclerView.Ad
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         val view: View
 
-        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_message_sent, parent, false)
-            return SentMessageHolder(view)
-        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
-            view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_message_received, parent, false)
-            return ReceivedMessageHolder(view)
+        return when (viewType) {
+            VIEW_TYPE_MESSAGE_SENT -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_message_sent, parent, false)
+                SentMessageHolder(view)
+            }
+            VIEW_TYPE_MESSAGE_RECEIVED -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_message_received, parent, false)
+                ReceivedMessageHolder(view)
+            }
+            VIEW_TYPE_MESSAGE_RECEIVED_PRIORITY -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_message_received_priority, parent, false)
+                ReceivedMessageHolder(view)
+            }
+            else -> {
+                null
+            }
         }
-
-        return null
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -64,7 +75,7 @@ class ConversaAdapter(val context: Context, val idAutor: Long) : RecyclerView.Ad
 
         when (holder.itemViewType) {
             VIEW_TYPE_MESSAGE_SENT -> (holder as SentMessageHolder).bind(message)
-            VIEW_TYPE_MESSAGE_RECEIVED -> (holder as ReceivedMessageHolder).bind(message)
+            VIEW_TYPE_MESSAGE_RECEIVED, VIEW_TYPE_MESSAGE_RECEIVED_PRIORITY -> (holder as ReceivedMessageHolder).bind(message)
         }
     }
 
