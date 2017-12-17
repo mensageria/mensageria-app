@@ -45,11 +45,6 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
                 .build()
         mensageriaComponent.inject(mViewModel)
         mViewModel.loadConversas()
-        mViewModel.conversas.observe(this, Observer<List<ConversaDTO>> { conversas ->
-            if (conversas != null) {
-                mAdapter.dados = conversas
-            }
-        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -100,5 +95,19 @@ class ListaConversasFragment : Fragment(), ListaConversaAdapter.ItemClickCallbac
             mViewVazia.visibility = View.VISIBLE
             return true
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.conversas.observe(this, Observer<List<ConversaDTO>> { conversas ->
+            if (conversas != null) {
+                mAdapter.dados = conversas
+            }
+        })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mViewModel.conversas.removeObservers(this)
     }
 }

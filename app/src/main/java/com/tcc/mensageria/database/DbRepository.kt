@@ -1,5 +1,7 @@
 package com.tcc.mensageria.database
 
+import android.arch.lifecycle.LiveData
+import com.tcc.mensageria.model.MensagemDTO
 import com.tcc.mensageria.model.MensagemPOJO
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
@@ -27,5 +29,9 @@ class DbRepository @Inject constructor(private val mensagemDao: MensagemDao,
                 inserirMensagemPOJO(mensagem)
             }
         }
+    }
+
+    fun buscarPorIdConversa(idConversa: Long): LiveData<List<MensagemDTO>> {
+        return mensagemDao.buscarPorIdConversa(idConversa)
     }
 }

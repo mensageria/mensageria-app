@@ -29,9 +29,9 @@ class SocketRepository @Inject constructor(private val stompClient: StompClient)
         }
     }
 
-    fun sendMensagem(idConversa: Long, mensagemPOJO: MensagemPOJO) {
+    fun sendMensagem(idConversa: Long, mensagemPOJO: MensagemPOJO, callback: () -> Unit) {
         val json = Gson().toJson(mensagemPOJO)
-        stompClient.send("/app/enviar/mensagens/conversa/$idConversa", json).subscribe()
+        stompClient.send("/app/enviar/mensagens/conversa/$idConversa", json).subscribe { callback() }
     }
 
 }
