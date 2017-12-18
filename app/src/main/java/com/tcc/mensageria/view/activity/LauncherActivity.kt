@@ -16,6 +16,7 @@ class LauncherActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     companion object {
