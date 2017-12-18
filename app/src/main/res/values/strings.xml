@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mensageria</string>
+    <string name="app_name">Crow</string>
     <string name="action_preferencias">Preferencias</string>
     <string name="action_atualizar">Atualizar</string>
     <string name="action_sair">Sair</string>
